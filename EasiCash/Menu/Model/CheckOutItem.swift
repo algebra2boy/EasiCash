@@ -8,10 +8,10 @@
 import Foundation
 
 struct CheckOutList {
-    
+
     let id: UUID
     var items: [MenuItem]
-    
+
     init(id: UUID = UUID(), items: [MenuItem] = []) {
         self.id = id
         self.items = items

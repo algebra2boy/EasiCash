@@ -2,3 +2,5 @@ EasiCash.xcodeproj/xcuserdata/chengtao.xcuserdatad/xcdebugger/Breakpoints_v2.xcb
 EasiCash.xcodeproj/project.xcworkspace/xcuserdata/chengtao.xcuserdatad/UserInterfaceState.xcuserstate
 *.xcuserstate
 *.xcuserstate
+*.DS_Store
+*UserInterfaceState.xcuserstate

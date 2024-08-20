@@ -10,14 +10,14 @@ import Charts
 
 struct BarChartView: View {
     var viewModel: SaleViewModel
-    
+
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 30)
                 .fill(Color.gray.opacity(0.15))
                 .gradientForeground(colors: [Color.green, Color.pink])
                 .shadow(color: Color.black.opacity(0.2), radius: 10, x: 0, y: 5)
-            
+
             Chart(viewModel.getOverallSale()) { item in
                 BarMark(
                     x: .value("Amount", item.amount),

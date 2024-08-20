@@ -8,9 +8,9 @@
 import SwiftUI
 
 struct FilterFoodCategoryChipsView: View {
-    
+
     @Binding var selectedCategory: MenuCategory
-    
+
     var body: some View {
         HStack(spacing: 20) {
             ForEach(MenuCategory.allCases, id: \.self) { category in
@@ -31,7 +31,7 @@ struct FilterFoodCategoryChipsView: View {
                 }
                 .buttonStyle(.plain)
             }
-            
+
             Spacer()
         }
         .padding(.vertical, 10)
@@ -40,8 +40,8 @@ struct FilterFoodCategoryChipsView: View {
 }
 
 #Preview {
-    
+
     @Previewable @State var selectedCategory: MenuCategory = .dessert
-    
+
     FilterFoodCategoryChipsView(selectedCategory: $selectedCategory)
 }

@@ -8,11 +8,11 @@
 import SwiftUI
 
 struct MenuTabView: View {
-    
+
     @State private var isInspectorPresented: Bool = true
-    
+
     @State private var submissionTapped: Bool = false
-    
+
     var body: some View {
         NavigationStack {
             VStack {
@@ -29,10 +29,10 @@ struct MenuTabView: View {
             .inspector(isPresented: $isInspectorPresented) {
                 CheckoutListView(submissionTapped: $submissionTapped)
             }
-            
+
         }
     }
-    
+
     func presentInspector() {
         isInspectorPresented.toggle()
     }

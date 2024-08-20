@@ -8,19 +8,17 @@
 import Charts
 import SwiftUI
 
-import SwiftUI
-
 struct AnalyticTabView: View {
-    
+
     @Environment(SaleViewModel.self) var viewModel: SaleViewModel
-    
+
     var body: some View {
         NavigationStack {
             VStack(spacing: 20) {
-                
+
                 HStack(spacing: 20) {
                     revenueBox()
-                    
+
 //                    BarChartView(viewModel: viewModel)
 //                        .layoutPriority(1)
 //                    
@@ -29,17 +27,17 @@ struct AnalyticTabView: View {
                 }
                 .frame(maxWidth: .infinity, minHeight: 300)
                 .padding()
-                
+
                 HourlyIncomeChartView(viewModel: viewModel)
                     .frame(maxWidth: .infinity, maxHeight: 300)
                     .padding()
-                
+
             }
             .navigationTitle("Analytic")
             .padding(20)
         }
     }
-    
+
     @ViewBuilder
     private func revenueBox() -> some View {
         ZStack {
@@ -47,12 +45,12 @@ struct AnalyticTabView: View {
                 .fill(Color.gray.opacity(0.15))
                 .gradientForeground(colors: [Color.green, Color.yellow])
                 .shadow(radius: 10)
-            
+
             VStack {
                 Text(String(format: "$%.2f", viewModel.getTodayRevenue()))
                     .font(.system(size: 50))
                     .foregroundStyle(Color.black.opacity(0.8))
-                
+
                 Text("Today Total Revenue")
                     .font(.system(size: 25, weight: .bold))
                     .gradientForeground(colors: [Color.green, Color.yellow])
@@ -63,9 +61,6 @@ struct AnalyticTabView: View {
         .layoutPriority(1)
     }
 }
-
-
-
 
 #Preview {
     AnalyticTabView()

@@ -10,18 +10,18 @@ import Foundation
 
 struct SaleInspectionView: View {
     var order: Order
-    
+
     var body: some View {
-        GeometryReader { geometry in
+        GeometryReader { _ in
             VStack(alignment: .leading, spacing: 20) {
                 Text(order.user)
                     .font(.largeTitle)
                     .foregroundColor(.primary)
                     .padding(.leading)
                     .offset(x: -18)
-                
+
                 Divider()
-                
+
                 // Order ID
                 VStack(alignment: .leading, spacing: 8) {
                     Text("Order ID")
@@ -31,9 +31,9 @@ struct SaleInspectionView: View {
                         .font(.body)
                         .foregroundColor(.secondary)
                 }
-                
+
                 Divider()
-                
+
                 // Date and Order Type Section
                 HStack(alignment: .top) {
                     VStack(alignment: .leading, spacing: 8) {
@@ -44,9 +44,9 @@ struct SaleInspectionView: View {
                             .font(.body)
                             .foregroundColor(.secondary)
                     }
-                    
+
                     Spacer()
-                    
+
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Order Type")
                             .font(.headline)
@@ -58,15 +58,15 @@ struct SaleInspectionView: View {
                     }
                 }
                 .padding(.bottom, 6)
-                
+
                 Divider()
-                
+
                 // Items Section
                 VStack(alignment: .leading, spacing: 12) {
                     Text("Order Items")
                         .font(.headline)
                         .foregroundColor(.primary)
-                    
+
                     ForEach(order.items) { item in
                         HStack(alignment: .top) {
                             VStack(alignment: .leading) {
@@ -85,9 +85,9 @@ struct SaleInspectionView: View {
                     }
                 }
                 .padding(.bottom, 6)
-                
+
                 Divider()
-                
+
                 // Total Price Section
                 HStack {
                     Spacer()
@@ -101,11 +101,16 @@ struct SaleInspectionView: View {
             .shadow(color: Color.black.opacity(0.1), radius: 10, x: 0, y: 5)
         }
     }
-    
-}
 
+}
 
 #Preview {
-    SaleInspectionView(order: Order(id: UUID(), user: "Hugo", note: "Love the food", price: 49.99, items: [MenuItem(imageName: "burger", title: "Item1",category: .food, price: 49.99, quantity: 2)], createdAt: Date(), type: .online))
+    SaleInspectionView(order: Order(
+        id: UUID(),
+        user: "Hugo",
+        note: "Love the food",
+        price: 49.99,
+        items: [MenuItem(imageName: "burger", title: "Item1", category: .food, price: 49.99, quantity: 2)],
+        createdAt: Date(),
+        type: .online))
 }
-

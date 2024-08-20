@@ -9,34 +9,34 @@ import SwiftUI
 import Foundation
 
 struct SaleTabView: View {
-    
+
     @Environment(SaleViewModel.self) var viewModel: SaleViewModel
-    
+
     @State private var isInspectorPresented: Bool = false
-    
-    @State private var selectedOrderID: Order.ID? = nil
-    
+
+    @State private var selectedOrderID: Order.ID?
+
     private var selectedOrder: Order? {
         guard let selectedOrderID else { return nil }
 
         return viewModel.saleHistory.filter { $0.id == selectedOrderID }[0]
     }
-    
+
     var body: some View {
         NavigationStack {
             Table(viewModel.saleHistory, selection: $selectedOrderID) {
                 TableColumn("Order ID") { order in
                     Text(order.id.uuidString.prefix(16))
                 }
-                
+
                 TableColumn("Price") { order in
                     Text(String(format: "$%.2f", order.price))
                 }
-                
+
                 TableColumn("Order Type") { order in
                     Text(order.type.rawValue.capitalized)
                 }
-                
+
                 TableColumn("Time of transaction") { order in
                     Text(order.createdAt, formatter: dateFormatter)
                 }
@@ -58,17 +58,17 @@ struct SaleTabView: View {
             .inspector(isPresented: $isInspectorPresented) {
                 if let selectedOrder {
                     SaleInspectionView(order: selectedOrder)
-                    
+
                 }
             }
-            
+
         }
     }
-    
+
     func presentItemInspector() {
         isInspectorPresented.toggle()
     }
-    
+
     // Date Formatter for displaying date
     private var dateFormatter: DateFormatter {
         let formatter = DateFormatter()
@@ -77,7 +77,6 @@ struct SaleTabView: View {
         return formatter
     }
 }
-
 
 #Preview {
     SaleTabView()
