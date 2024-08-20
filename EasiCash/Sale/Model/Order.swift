@@ -8,8 +8,8 @@
 import Foundation
 
 enum OrderType: String, CaseIterable {
-    case online = "online"
-    case inStore = "inStore"
+    case online
+    case inStore
 }
 
 struct Order: Identifiable {
@@ -20,8 +20,16 @@ struct Order: Identifiable {
     let items: [MenuItem]
     let createdAt: Date
     let type: OrderType
-    
-    init(id: UUID = UUID(), user: String, note: String, price: Double, items: [MenuItem], createdAt: Date = Date.now, type: OrderType) {
+
+    init(
+        id: UUID = UUID(),
+        user: String,
+        note: String,
+        price: Double,
+        items: [MenuItem],
+        createdAt: Date = Date.now,
+        type: OrderType
+    ) {
         self.id = id
         self.user = user
         self.note = note

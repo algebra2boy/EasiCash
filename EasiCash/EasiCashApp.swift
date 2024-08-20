@@ -19,8 +19,7 @@ struct EasiCashApp: App {
                             .displayFrequency(.immediate),
                             .datastoreLocation(.applicationDefault)
                         ])
-                    }
-                    catch {
+                    } catch {
                         print("Error initializing TipKit \(error.localizedDescription)")
                     }
                 }

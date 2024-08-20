@@ -15,7 +15,7 @@ enum MenuCategory: String, CaseIterable {
 }
 
 struct MenuItem: Identifiable, Equatable {
-    
+
     var id: UUID
     var imageName: String
     var image: Image?
@@ -23,8 +23,16 @@ struct MenuItem: Identifiable, Equatable {
     var price: Double
     var quantity: Int
     var category: MenuCategory
-    
-    init(id: UUID = UUID(), imageName: String, image: Image? = nil, title: String, category: MenuCategory, price: Double, quantity: Int = 1) {
+
+    init(
+        id: UUID = UUID(),
+        imageName: String,
+        image: Image? = nil,
+        title: String,
+        category: MenuCategory,
+        price: Double,
+        quantity: Int = 1
+    ) {
         self.id = id
         self.imageName = imageName
         self.image = image

@@ -9,27 +9,27 @@ import SwiftUI
 import PhotosUI
 
 struct MenuGridGalleryView: View {
-    
+
     @Environment(MenuViewModel.self) var viewModel: MenuViewModel
-    
+
     let columns = [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())]
-    
+
     @State private var selectedCategory: MenuCategory = .food
-    
+
     @State private var presentAddMenuItemSheetView: Bool = false
-    
+
     @Binding var submissionTapped: Bool
-    
+
     var addNewMenuItemTip = AddNewMenuItemTip()
-        
+
     private var filteredMenuItems: [MenuItem] {
         viewModel.menuItems.filter { $0.category == selectedCategory }
     }
-    
-    var body: some View {        
+
+    var body: some View {
         ScrollView {
             FilterFoodCategoryChipsView(selectedCategory: $selectedCategory)
-            
+
             LazyVGrid(columns: columns, spacing: 20) {
                 ForEach(filteredMenuItems) { item in
                     MenuGridItemView(item: item)

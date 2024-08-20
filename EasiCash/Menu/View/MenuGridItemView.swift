@@ -8,17 +8,17 @@
 import SwiftUI
 
 struct MenuGridItemView: View {
-    
+
     @Environment(MenuViewModel.self) var menuViewModel: MenuViewModel
-        
+
     var item: MenuItem
-    
+
     private var quantity: Int {
         let filteredItems = menuViewModel.customerSelectedItems.items.filter { item.id == $0.id }
         if filteredItems.isEmpty { return 0 }
         return filteredItems[0].quantity
     }
-    
+
     var body: some View {
 
         VStack(alignment: .leading) {
@@ -36,7 +36,7 @@ struct MenuGridItemView: View {
                     .scaledToFit()
                     .clipShape(RoundedRectangle(cornerRadius: 10))
             }
-            
+
             VStack(alignment: .leading) {
                 Text(item.title)
                     .font(.system(size: 24, weight: .medium))
@@ -67,9 +67,9 @@ struct MenuGridItemView: View {
                 menuViewModel.removeOrder(with: item)
             }
         }
-        .shadow(radius: 5) 
+        .shadow(radius: 5)
     }
-    
+
 }
 
 #Preview {

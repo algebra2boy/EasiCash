@@ -5,20 +5,19 @@
 //  Created by CHENGTAO on 8/17/24.
 //
 
-
 import SwiftUI
 import Charts
 
 struct PieChartView: View {
     var viewModel: SaleViewModel
-    
+
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 50)
                 .fill(Color.gray.opacity(0.15))
                 .frame(width: 350, height: 350)
                 .gradientForeground(colors: [Color.orange, Color.cyan])
-            
+
             Chart(viewModel.getSalesByCategory()) { item in
                 SectorMark(
                     angle: .value("Amount", item.amount),
@@ -45,5 +44,5 @@ struct PieChartView: View {
             .frame(width: 300, height: 300)
         }
     }
-    
+
 }

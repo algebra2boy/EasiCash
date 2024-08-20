@@ -8,23 +8,23 @@
 import SwiftUI
 
 struct CheckoutListView: View {
-    
+
     @Environment(MenuViewModel.self) var menuViewModel: MenuViewModel
     @Environment(SaleViewModel.self) var saleViewModel: SaleViewModel
-    
+
     @State private var orderType: OrderType = .inStore
-    
+
     @State private var customerName: String = ""
-    
+
     @State private var additionalInfo: String = ""
-    
+
     @State private var clearOrder: Bool = false
-    
+
     @Binding var submissionTapped: Bool
 
     var body: some View {
         @Bindable var menuViewModel = menuViewModel
-        
+
         if menuViewModel.customerSelectedItems.items.count > 0 {
             VStack {
                 List {
@@ -35,7 +35,7 @@ struct CheckoutListView: View {
                     } header: {
                         Text("Order list")
                     }
-                    
+
                     Section {
                         Picker("Pick one order type", selection: $orderType) {
                             ForEach(OrderType.allCases, id: \.self) {
@@ -47,7 +47,7 @@ struct CheckoutListView: View {
                         Text("Order Type")
                     }
                     .listRowSeparator(.hidden)
-                    
+
                     Section {
                         TextField("Customer Name", text: $customerName)
                             .textFieldStyle(.roundedBorder)
@@ -59,9 +59,9 @@ struct CheckoutListView: View {
                     .listRowSeparator(.hidden)
                 }
                 .listStyle(.plain)
-                
+
                 Spacer()
-                
+
                 // Total Price UI
                 HStack {
                     Text("Total Price:")
@@ -75,7 +75,7 @@ struct CheckoutListView: View {
                 .padding()
                 .cornerRadius(10)
                 .padding([.leading, .trailing, .bottom], 20)
-                
+
                 HStack(spacing: 20) {
                     Button(role: .destructive) {
                         clearOrder.toggle()
@@ -83,7 +83,7 @@ struct CheckoutListView: View {
                         Text("Clear")
                     }
                     .buttonStyle(.borderedProminent)
-                    
+
                     Button {
                         saleViewModel.addSale(
                             with: menuViewModel.customerSelectedItems,
@@ -109,7 +109,7 @@ struct CheckoutListView: View {
             Text("No item selected")
         }
     }
-    
+
     func removeListOrder() {
         withAnimation {
             menuViewModel.clearOrder()

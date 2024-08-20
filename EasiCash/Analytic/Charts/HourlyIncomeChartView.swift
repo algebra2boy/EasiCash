@@ -8,13 +8,10 @@
 import SwiftUI
 import Charts
 
-import SwiftUI
-import Charts
-
 struct HourlyIncomeChartView: View {
     var viewModel: SaleViewModel
-    @State private var selectedHour: Int? = nil
-    
+    @State private var selectedHour: Int?
+
     var body: some View {
         VStack {
             Chart {
@@ -27,15 +24,23 @@ struct HourlyIncomeChartView: View {
                         .foregroundStyle(by: .value("Series", series.label))
                     }
                 }
-                
+
                 if let selectedHour {
                     RuleMark(x: .value("Selected Hour", selectedHour))
                         .foregroundStyle(Color.gray.opacity(0.3))
                         .offset(yStart: -10)
                         .zIndex(-1)
                         .annotation(position: .top, alignment: .center) {
-                            let todayIncome = viewModel.get24HourIncomeComparison()[0].sales.first(where: { $0.hour == selectedHour })?.income ?? 0
-                            let yesterdayIncome = viewModel.get24HourIncomeComparison()[1].sales.first(where: { $0.hour == selectedHour })?.income ?? 0
+                            let todayIncome = viewModel
+                                .get24HourIncomeComparison()[0]
+                                .sales
+                                .first(where: { $0.hour == selectedHour })?.income ?? 0
+
+                            let yesterdayIncome = viewModel
+                                .get24HourIncomeComparison()[1]
+                                .sales
+                                .first(where: { $0.hour == selectedHour })?.income ?? 0
+
                             VStack {
                                 Text("Hour: \(selectedHour):00")
                                     .font(.caption)
@@ -60,7 +65,7 @@ struct HourlyIncomeChartView: View {
             ])
             .chartXScale(domain: 0...23) // Limit x-axis to 24 hours
             .chartXAxis {
-                AxisMarks(values: Array(0...23)) { value in
+                AxisMarks(values: Array(0...23)) { _ in
                     AxisGridLine()
                     AxisTick()
                     AxisValueLabel()
@@ -81,7 +86,7 @@ struct HourlyIncomeChartView: View {
             Text("24-Hour Income Comparison")
                 .font(.title2.bold())
                 .gradientForeground(colors: [Color.blue, Color.orange])
-            
+
         }
         .padding()
     }

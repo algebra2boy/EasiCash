@@ -5,18 +5,17 @@
 //  Created by CHENGTAO on 8/17/24.
 //
 
-
 import SwiftUI
 
 struct OrderSubmissionView: View {
-    
+
     @Binding var submissionTapped: Bool
-    
+
     @State private var isAnimating: Bool = false
     @State private var second: Int = 0
-    
+
     let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
-    
+
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 20)
@@ -38,7 +37,7 @@ struct OrderSubmissionView: View {
                                 .opacity(isAnimating ? 1 : 0)
                         }
                 }
-                
+
                 Text("Your order has been submitted!")
                     .font(.system(size: 18).bold())
                     .multilineTextAlignment(.center)

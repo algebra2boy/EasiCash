@@ -9,41 +9,41 @@ import SwiftUI
 import PhotosUI
 
 struct AddNewMenuItemSheetView: View {
-    
+
     @Environment(MenuViewModel.self) var viewModel: MenuViewModel
-    
+
     @Binding var presentAddMenuItemSheetView: Bool
-    
+
     @State private var newMenuItemTitle: String = ""
     @State private var newMenuItemPrice: Double = 0
     @State private var pickerItem: PhotosPickerItem?
     @State private var selectedImage: Image?
     @State private var selectedCategory: MenuCategory = .food
-    
+
     var body: some View {
         NavigationStack {
             VStack {
                 List {
-                    
+
                     Section {
                         PhotosPicker("Select a picture", selection: $pickerItem, matching: .images)
                     } header: {
                         Text("Upload an image")
                     }
-                    
+
                     Section {
                         TextField("Title", text: $newMenuItemTitle)
                     } header: {
                         Text("Title")
                     }
-                    
+
                     Section {
                         TextField("Price", value: $newMenuItemPrice, formatter: NumberFormatter())
                             .keyboardType(.decimalPad)
                     } header: {
                         Text("Price")
                     }
-                    
+
                     Section {
                         Picker("Category", selection: $selectedCategory) {
                             ForEach(MenuCategory.allCases, id: \.self) { category in
@@ -54,7 +54,7 @@ struct AddNewMenuItemSheetView: View {
                     } header: {
                         Text("Category")
                     }
-                    
+
                 }
                 .onChange(of: pickerItem) {
                     Task {
@@ -71,10 +71,17 @@ struct AddNewMenuItemSheetView: View {
                         Text("Cancel")
                     }
                 }
-                
+
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
-                        viewModel.menuItems.append(.init(imageName: newMenuItemTitle, image: selectedImage, title: newMenuItemTitle, category: selectedCategory, price: newMenuItemPrice))
+                        viewModel.menuItems.append(
+                            .init(imageName: newMenuItemTitle,
+                                  image: selectedImage,
+                                  title: newMenuItemTitle,
+                                  category: selectedCategory,
+                                  price: newMenuItemPrice)
+                        )
+
                         presentAddMenuItemSheetView = false
                     } label: {
                         Text("Submit")
@@ -83,6 +90,10 @@ struct AddNewMenuItemSheetView: View {
                 }
             }
         }
+    }
+
+    func add(number: Int) {
+
     }
 }
 
