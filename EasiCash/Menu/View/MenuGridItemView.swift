@@ -48,12 +48,13 @@ struct MenuGridItemView: View {
         .overlay(alignment: .topTrailing) {
             if quantity > 0 {
                 Circle()
-                    .fill(Color.white)
+                    .fill(Color.red)
                     .frame(width: 25)
                     .padding(.horizontal, 15)
                     .padding(.vertical, 8)
                     .overlay {
                         Text("\(quantity)")
+                            .foregroundStyle(.white)
                     }
             }
         }
