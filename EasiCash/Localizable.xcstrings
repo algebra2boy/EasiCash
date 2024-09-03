@@ -1,0 +1,174 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "%@ x %lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ x %2$lld"
+          }
+        }
+      }
+    },
+    "%lld" : {
+
+    },
+    "24-Hour Income Comparison" : {
+
+    },
+    "Add item using photo, name, and price" : {
+
+    },
+    "Add new menu item" : {
+
+    },
+    "Additional Info" : {
+
+    },
+    "Amount" : {
+
+    },
+    "Analytic" : {
+
+    },
+    "Are you sure you want to clear the order?" : {
+
+    },
+    "Cancel" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancel"
+          }
+        }
+      }
+    },
+    "Category" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Category"
+          }
+        }
+      }
+    },
+    "Checkout" : {
+
+    },
+    "Clear" : {
+
+    },
+    "Customer Info" : {
+
+    },
+    "Customer Name" : {
+
+    },
+    "Distribution of" : {
+
+    },
+    "Hour" : {
+
+    },
+    "Hour: %lld:00" : {
+
+    },
+    "Income" : {
+
+    },
+    "Items by Category" : {
+
+    },
+    "Menu" : {
+
+    },
+    "No" : {
+
+    },
+    "No item selected" : {
+
+    },
+    "Order Created" : {
+
+    },
+    "Order ID" : {
+
+    },
+    "Order Items" : {
+
+    },
+    "Order list" : {
+
+    },
+    "Order Type" : {
+
+    },
+    "Pick one order type" : {
+
+    },
+    "Price" : {
+
+    },
+    "Price: $%@" : {
+
+    },
+    "Quantity" : {
+
+    },
+    "Quantity:" : {
+
+    },
+    "Sales" : {
+
+    },
+    "Save new menu Item" : {
+
+    },
+    "Select a picture" : {
+
+    },
+    "Selected Hour" : {
+
+    },
+    "Series" : {
+
+    },
+    "Submit" : {
+
+    },
+    "Time of transaction" : {
+
+    },
+    "Title" : {
+
+    },
+    "Today Total Revenue" : {
+
+    },
+    "Today: $%@" : {
+
+    },
+    "Total Price:" : {
+
+    },
+    "Total: %@" : {
+
+    },
+    "Upload an image" : {
+
+    },
+    "Yes" : {
+
+    },
+    "Yesterday: $%@" : {
+
+    },
+    "Your order has been submitted!" : {
+
+    }
+  },
+  "version" : "1.0"
+}
