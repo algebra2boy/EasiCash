@@ -73,6 +73,14 @@ struct CheckoutListItemView: View {
                 }
             }
         }
+        .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+            Button(role: .destructive) {
+                // TODO: add delete handler here
+            } label: {
+                Label("Delete", systemImage: "trash")
+            }
+            .tint(.red)
+        }
     }
 }
 
@@ -80,5 +88,7 @@ struct CheckoutListItemView: View {
 
     @Previewable @State var item: MenuItem = MenuViewModel.mock.menuItems[0]
 
-    CheckoutListItemView(item: $item, itemDeleteHandler: {})
+    return List {
+        CheckoutListItemView(item: $item, itemDeleteHandler: {})
+    }
 }
