@@ -15,7 +15,9 @@ struct FilterFoodCategoryChipsView: View {
         HStack(spacing: 20) {
             ForEach(MenuCategory.allCases, id: \.self) { category in
                 Button {
-                    selectedCategory = category
+                    withAnimation(.linear) {
+                        selectedCategory = category
+                    }
                 } label: {
                     Text(category.rawValue)
                         .padding(15)

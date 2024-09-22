@@ -12,14 +12,15 @@ struct MenuGridGalleryView: View {
 
     @Environment(MenuViewModel.self) var viewModel: MenuViewModel
 
-    let columns = [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())]
-
     @State private var selectedCategory: MenuCategory = .food
 
     @State private var presentAddMenuItemSheetView: Bool = false
 
     @Binding var submissionTapped: Bool
 
+    let columns = [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())]
+
+    // Note: add a tip here to inform what the plus button does
     var addNewMenuItemTip = AddNewMenuItemTip()
 
     private var filteredMenuItems: [MenuItem] {
@@ -49,14 +50,14 @@ struct MenuGridGalleryView: View {
         .sheet(isPresented: $presentAddMenuItemSheetView) {
             AddNewMenuItemSheetView(presentAddMenuItemSheetView: $presentAddMenuItemSheetView)
         }
-        .overlay(
-            Group {
-                if submissionTapped {
-                    OrderSubmissionView(submissionTapped: $submissionTapped)
-                        .transition(.scale)
-                }
-            }
-        )
+//        .overlay(
+//            Group {
+//                if submissionTapped {
+//                    OrderSubmissionView(submissionTapped: $submissionTapped)
+//                        .transition(.scale)
+//                }
+//            }
+//        )
     }
 }
 
@@ -64,5 +65,6 @@ struct MenuGridGalleryView: View {
     NavigationStack {
         MenuGridGalleryView(submissionTapped: .constant(false))
             .environment(MenuViewModel.mock)
+            .previewableTip()
     }
 }
