@@ -10,7 +10,7 @@ struct CheckoutListItemView: View {
 
     @Binding var item: MenuItem
 
-    var onDelete: () -> Void 
+    var itemDeleteHandler: () -> Void
 
     private var quantityFormatter: NumberFormatter {
         let formatter = NumberFormatter()
@@ -18,9 +18,9 @@ struct CheckoutListItemView: View {
         return formatter
     }
 
-    init(item: Binding<MenuItem>, onDelete: @escaping () -> Void = {}) {
+    init(item: Binding<MenuItem>, itemDeleteHandler: @escaping () -> Void = {}) {
         self._item = item
-        self.onDelete = onDelete
+        self.itemDeleteHandler = itemDeleteHandler
     }
 
     var body: some View {
@@ -46,10 +46,10 @@ struct CheckoutListItemView: View {
 
                 HStack {
                     Button {
-                        if item.quantity >= 1 {
+                        if item.quantity > 1 {
                             item.quantity -= 1
                         } else {
-                            onDelete()
+                            itemDeleteHandler()
                         }
                     } label: {
                         Image(systemName: item.quantity > 1 ? "minus" : "trash")
@@ -80,5 +80,5 @@ struct CheckoutListItemView: View {
 
     @Previewable @State var item: MenuItem = MenuViewModel.mock.menuItems[0]
 
-    CheckoutListItemView(item: $item, onDelete: {})
+    CheckoutListItemView(item: $item, itemDeleteHandler: {})
 }

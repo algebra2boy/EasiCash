@@ -39,7 +39,6 @@ struct CheckoutListView: View {
                     ForEach($menuViewModel.customerSelectedItems.items) { item in
                         CheckoutListItemView(item: item) {
                             menuViewModel.removeOrder(with: item.wrappedValue)
-                            print(menuViewModel.menuItems)
                         }
                     }
                 } header: {
