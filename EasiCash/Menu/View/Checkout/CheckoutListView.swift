@@ -19,7 +19,7 @@ struct CheckoutListView: View {
 
     @State private var additionalInfo: String = ""
 
-    @State private var emptyOrder: Bool = false
+    @State private var isEmptyOrderButtonPressed: Bool = false
 
     @Binding var submissionTapped: Bool
 
@@ -37,16 +37,20 @@ struct CheckoutListView: View {
             List {
                 Section {
                     ForEach($menuViewModel.customerSelectedItems.items) { item in
-                        CheckoutListItemView(item: item)
+                        CheckoutListItemView(item: item) {
+                            menuViewModel.removeOrder(with: item.wrappedValue)
+                            print(menuViewModel.menuItems)
+                        }
                     }
                 } header: {
                     Text("Order list")
                 }
 
                 Section {
-                    Picker("Pick one order type", selection: $orderType) {
+                    Picker("Pick order type", selection: $orderType) {
                         ForEach(OrderType.allCases, id: \.self) {
                             Text($0.rawValue)
+                                .tag($0)
                         }
                     }
                     .pickerStyle(.segmented)
@@ -69,7 +73,6 @@ struct CheckoutListView: View {
 
             Spacer()
 
-            // Total Price UI
             HStack {
                 Text("Total Price:")
                     .font(.headline)
@@ -85,32 +88,26 @@ struct CheckoutListView: View {
 
             HStack(spacing: 20) {
                 Button(role: .destructive) {
-                    emptyOrder.toggle()
+                    isEmptyOrderButtonPressed.toggle()
                 } label: {
-                    Text("Clear")
+                    Text("Empty")
+                        .padding(3)
                 }
                 .buttonStyle(.borderedProminent)
 
                 Button {
-                    saleViewModel.addSale(
-                        with: menuViewModel.customerSelectedItems,
-                        name: customerName,
-                        note: additionalInfo,
-                        type: orderType,
-                        totalPrice: menuViewModel.totalPrice
-                    )
-                    emptyListOrder()
-                    submissionTapped = true
+                    checkout()
                 } label: {
                     Label("Checkout", systemImage: "cart")
+                        .padding(3)
                 }
                 .buttonStyle(.borderedProminent)
                 .padding(10)
             }
         }
-        .alert("Are you sure you want to clear the order?", isPresented: $emptyOrder) {
-            Button("No") { }
-            Button("Yes") { emptyListOrder() }
+        .alert("Are you sure you want to clear the order?", isPresented: $isEmptyOrderButtonPressed) {
+            Button("No", role: .cancel) { }
+            Button("Yes", role: .destructive) { emptyListOrder() }
         }
     }
 
@@ -119,6 +116,20 @@ struct CheckoutListView: View {
             Label("No Item", systemImage: "tray.fill")
         } description: {
             Text("New item you added will be shown here.")
+        }
+    }
+
+    func checkout() {
+        withAnimation {
+            saleViewModel.addSale(
+                with: menuViewModel.customerSelectedItems,
+                name: customerName,
+                note: additionalInfo,
+                type: orderType,
+                totalPrice: menuViewModel.totalPrice
+            )
+            emptyListOrder()
+            submissionTapped = true
         }
     }
 

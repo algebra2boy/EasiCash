@@ -13,7 +13,7 @@ public struct PreviewableTipViewModifier: ViewModifier {
         content
             .task { Self.initializeTipKit() }
     }
-    
+
     static func initializeTipKit() {
         do {
             try Tips.configure([

@@ -10,10 +10,17 @@ struct CheckoutListItemView: View {
 
     @Binding var item: MenuItem
 
+    var onDelete: () -> Void 
+
     private var quantityFormatter: NumberFormatter {
         let formatter = NumberFormatter()
         formatter.numberStyle = .none
         return formatter
+    }
+
+    init(item: Binding<MenuItem>, onDelete: @escaping () -> Void = {}) {
+        self._item = item
+        self.onDelete = onDelete
     }
 
     var body: some View {
@@ -24,7 +31,6 @@ struct CheckoutListItemView: View {
                     .foregroundColor(.primary)
                     .padding(.leading, 16)
                 Spacer()
-
                 Text(String(format: "$%.2f", item.price))
                     .font(.headline)
                     .foregroundColor(.primary)
@@ -40,14 +46,16 @@ struct CheckoutListItemView: View {
 
                 HStack {
                     Button {
-                        if item.quantity > 0 {
+                        if item.quantity >= 1 {
                             item.quantity -= 1
+                        } else {
+                            onDelete()
                         }
                     } label: {
-                        Image(systemName: "minus")
+                        Image(systemName: item.quantity > 1 ? "minus" : "trash")
                     }
                     .buttonStyle(.plain)
-                    .frame(width: 30, height: 50)
+                    .frame(width: 25, height: 50)
 
                     TextField("Quantity", value: $item.quantity, formatter: quantityFormatter)
                         .frame(width: 50)
@@ -61,7 +69,7 @@ struct CheckoutListItemView: View {
                         Image(systemName: "plus")
                     }
                     .buttonStyle(.plain)
-                    .frame(width: 30, height: 50)
+                    .frame(width: 25, height: 50)
                 }
             }
         }
@@ -70,7 +78,7 @@ struct CheckoutListItemView: View {
 
 #Preview {
 
-    @Previewable @State var item: MenuItem = MenuViewModel().menuItems[0]
+    @Previewable @State var item: MenuItem = MenuViewModel.mock.menuItems[0]
 
-    CheckoutListItemView(item: $item)
+    CheckoutListItemView(item: $item, onDelete: {})
 }

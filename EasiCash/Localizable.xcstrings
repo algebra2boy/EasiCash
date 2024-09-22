@@ -58,9 +58,6 @@
     "Checkout" : {
 
     },
-    "Clear" : {
-
-    },
     "Customer Info" : {
 
     },
@@ -68,6 +65,9 @@
 
     },
     "Distribution of" : {
+
+    },
+    "Empty" : {
 
     },
     "Hour" : {
@@ -109,7 +109,7 @@
     "Order Type" : {
 
     },
-    "Pick one order type" : {
+    "Pick order type" : {
 
     },
     "Price" : {

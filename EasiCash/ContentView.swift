@@ -6,8 +6,11 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct ContentView: View {
+
+    @Environment(\.modelContext) private var modelContext
 
     @State private var menuViewModel: MenuViewModel = MenuViewModel()
 
@@ -17,6 +20,11 @@ struct ContentView: View {
         EasiCashMainTabView()
             .environment(menuViewModel)
             .environment(saleViewModel)
+            .onAppear(perform: consoleSQLiteDBURL)
+    }
+
+    func consoleSQLiteDBURL() {
+        print(modelContext.sqliteCommand)
     }
 }
 
