@@ -85,10 +85,13 @@
     "Menu" : {
 
     },
+    "New item you added will be shown here." : {
+
+    },
     "No" : {
 
     },
-    "No item selected" : {
+    "No Item" : {
 
     },
     "Order Created" : {
