@@ -21,7 +21,7 @@ struct MenuGridGalleryView: View {
     let columns = [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())]
 
     // Note: add a tip here to inform what the plus button does
-    var addNewMenuItemTip = AddNewMenuItemTip()
+    let addNewMenuItemTip = AddNewMenuItemTip()
 
     private var filteredMenuItems: [MenuItem] {
         viewModel.menuItems.filter { $0.category == selectedCategory }

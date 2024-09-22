@@ -108,10 +108,6 @@ import Foundation
                 MenuItem(imageName: "pho", title: "pho", category: .food, price: 12.99, quantity: 2)
             ], createdAt: calendar.date(bySettingHour: 15, minute: 0, second: 0, of: today)!, type: .online),
 
-            Order(id: UUID(), user: "Dave", note: "Loved the wings", price: 39.96, items: [
-                MenuItem(imageName: "chickenWings", title: "chicken wings", category: .food, price: 9.99, quantity: 4)
-            ], createdAt: calendar.date(bySettingHour: 18, minute: 0, second: 0, of: today)!, type: .inStore),
-
             Order(id: UUID(), user: "Eve", note: "Tasty!", price: 25.97, items: [
                 MenuItem(imageName: "pho", title: "pho", category: .food, price: 12.99, quantity: 2)
             ], createdAt: calendar.date(bySettingHour: 21, minute: 0, second: 0, of: today)!, type: .online),
@@ -130,10 +126,6 @@ import Foundation
                 MenuItem(imageName: "sushi", title: "Sushi", category: .food, price: 13.99, quantity: 2),
                 MenuItem(imageName: "noodle", title: "Noodle", category: .food, price: 9.99, quantity: 1)
             ], createdAt: calendar.date(bySettingHour: 15, minute: 0, second: 0, of: today)!, type: .online),
-
-            Order(id: UUID(), user: "Davve", note: "Loved the wings", price: 39.96, items: [
-                MenuItem(imageName: "chickenWings", title: "Chicken Wings", category: .food, price: 9.99, quantity: 4)
-            ], createdAt: calendar.date(bySettingHour: 18, minute: 0, second: 0, of: today)!, type: .inStore),
 
             Order(id: UUID(), user: "Exve", note: "Tasty!", price: 30.97, items: [
                 MenuItem(imageName: "pho", title: "Pho", category: .food, price: 12.99, quantity: 2),
@@ -160,9 +152,6 @@ import Foundation
                 MenuItem(imageName: "thaiTea", title: "Thai tea", category: .drink, price: 6.99, quantity: 1)
             ], createdAt: calendar.date(bySettingHour: 19, minute: 0, second: 0, of: yesterday)!, type: .inStore),
 
-            Order(id: UUID(), user: "Jack", note: "Very satisfying", price: 39.96, items: [
-                MenuItem(imageName: "chickenWings", title: "chicken wings", category: .food, price: 9.99, quantity: 4)
-            ], createdAt: calendar.date(bySettingHour: 22, minute: 0, second: 0, of: yesterday)!, type: .online),
             Order(id: UUID(), user: "Fransk", note: "Will order again", price: 18.98, items: [
                 MenuItem(imageName: "pizza2", title: "Pizza Special", category: .food, price: 15.99, quantity: 1),
                 MenuItem(imageName: "thaiTea", title: "Thai tea", category: .drink, price: 2.99, quantity: 1)

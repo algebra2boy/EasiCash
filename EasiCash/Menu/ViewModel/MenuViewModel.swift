@@ -21,6 +21,10 @@ import Foundation
             }
     }
 
+    var hasItemInCart: Bool {
+        self._customerSelectedItems.items.count > 0
+    }
+
     init(menuItems: [MenuItem] = [], customerSelectedItems: CheckOutList = .init()) {
         self.menuItems = menuItems
         self.customerSelectedItems = customerSelectedItems
@@ -51,7 +55,7 @@ import Foundation
         }
     }
 
-    func clearOrder() {
+    func emptyOrder() {
         self.customerSelectedItems = .init(items: [])
     }
 }
@@ -61,7 +65,6 @@ extension MenuViewModel {
     static var sampleMeunItems: [MenuItem] = [
         // food
         .init(imageName: "burger", title: "Burger", category: .food, price: 12.99),
-        .init(imageName: "chickenWings", title: "Chicken Wings", category: .food, price: 10.99),
         .init(imageName: "firedRice", title: "Fried Rice", category: .food, price: 8.99),
         .init(imageName: "noodle", title: "Noodle", category: .food, price: 9.99),
         .init(imageName: "pho", title: "Pho", category: .food, price: 11.99),
@@ -84,11 +87,11 @@ extension MenuViewModel {
         .init(imageName: "iceCream", title: "ice Cream", category: .dessert, price: 5.99)
     ]
 
-    static var sampleCustomerSelectItems: CheckOutList = .init(items: [
-        .init(imageName: "chickenWings", title: "chickenWings", category: .food, price: 10.99)
-    ])
+    static var sampleCustomerSelectedItems: CheckOutList {
+        .init(items: [Self.sampleMeunItems[0]])
+    }
 
     static var mock: MenuViewModel {
-        .init(menuItems: sampleMeunItems, customerSelectedItems: sampleCustomerSelectItems)
+        .init(menuItems: sampleMeunItems, customerSelectedItems: sampleCustomerSelectedItems)
     }
 }

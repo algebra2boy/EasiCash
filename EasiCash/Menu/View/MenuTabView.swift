@@ -42,6 +42,6 @@ struct MenuTabView: View {
 
 #Preview {
     MenuTabView()
-        .environment(MenuViewModel())
+        .environment(MenuViewModel.mock)
         .environment(SaleViewModel())
 }

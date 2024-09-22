@@ -74,13 +74,14 @@ struct AddNewMenuItemSheetView: View {
 
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
-                        viewModel.menuItems.append(
-                            .init(imageName: newMenuItemTitle,
-                                  image: selectedImage,
-                                  title: newMenuItemTitle,
-                                  category: selectedCategory,
-                                  price: newMenuItemPrice)
-                        )
+                        // TODO: fix data type here
+//                        viewModel.menuItems.append(
+//                            .init(imageName: newMenuItemTitle,
+//                                  image: selectedImage,
+//                                  title: newMenuItemTitle,
+//                                  category: selectedCategory,
+//                                  price: newMenuItemPrice)
+//                        )
 
                         presentAddMenuItemSheetView = false
                     } label: {

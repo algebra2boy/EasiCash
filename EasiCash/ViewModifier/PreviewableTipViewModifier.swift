@@ -8,15 +8,21 @@
 import SwiftUI
 import TipKit
 
-struct PreviewableTipViewModifier: ViewModifier {
-    func body(content: Content) -> some View {
+public struct PreviewableTipViewModifier: ViewModifier {
+    public func body(content: Content) -> some View {
         content
-            .task {
-                try? Tips.configure([
-                    .displayFrequency(.immediate),
-                    .datastoreLocation(.applicationDefault)
-                ])
-            }
+            .task { Self.initializeTipKit() }
+    }
+    
+    static func initializeTipKit() {
+        do {
+            try Tips.configure([
+                .displayFrequency(.immediate),
+                .datastoreLocation(.applicationDefault)
+            ])
+        } catch {
+            print("Error initializing TipKit: \(error.localizedDescription)")
+        }
     }
 }
 

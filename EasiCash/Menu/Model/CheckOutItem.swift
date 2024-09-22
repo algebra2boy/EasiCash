@@ -6,10 +6,12 @@
 //
 
 import Foundation
+import SwiftData
 
-struct CheckOutList {
+@Model
+class CheckOutList {
 
-    let id: UUID
+    var id: UUID
     var items: [MenuItem]
 
     init(id: UUID = UUID(), items: [MenuItem] = []) {

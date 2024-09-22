@@ -22,8 +22,8 @@ struct MenuGridItemView: View {
     var body: some View {
 
         VStack(alignment: .leading) {
-            if let image = item.image {
-                image.roundedImageStyle()
+            if let imageData = item.image, let image = UIImage(data: imageData) {
+                Image(uiImage: image).roundedImageStyle()
 
             } else {
                 Image(item.imageName).roundedImageStyle()
