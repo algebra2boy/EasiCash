@@ -23,21 +23,13 @@ struct MenuGridItemView: View {
 
         VStack(alignment: .leading) {
             if let image = item.image {
-                image
-                    .resizable()
-                    .frame(width: 150, height: 150)
-                    .scaledToFit()
-                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                image.roundedImageStyle()
 
             } else {
-                Image(item.imageName)
-                    .resizable()
-                    .frame(width: 150, height: 150)
-                    .scaledToFit()
-                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                Image(item.imageName).roundedImageStyle()
             }
 
-            VStack(alignment: .leading) {
+            VStack(alignment: .leading, spacing: 2) {
                 Text(item.title)
                     .font(.system(size: 24, weight: .medium))
                 Text("Price: $\(String(format: "%.2f", item.price))")
@@ -50,9 +42,8 @@ struct MenuGridItemView: View {
                 Circle()
                     .fill(Color.red)
                     .frame(width: 25)
-                    .padding(.horizontal, 15)
-                    .padding(.vertical, 8)
-                    .overlay {
+                    .padding([.horizontal, .vertical], 3)
+                    .overlay(alignment: .center) {
                         Text("\(quantity)")
                             .foregroundStyle(.white)
                     }
@@ -68,12 +59,12 @@ struct MenuGridItemView: View {
                 menuViewModel.removeOrder(with: item)
             }
         }
-        .shadow(radius: 5)
     }
 
 }
 
 #Preview {
-    MenuGridItemView(item: MenuViewModel().menuItems[0])
-        .environment(MenuViewModel.mock)
+    let mock: MenuViewModel = MenuViewModel.mock
+    MenuGridItemView(item: mock.menuItems[0])
+        .environment(mock)
 }
