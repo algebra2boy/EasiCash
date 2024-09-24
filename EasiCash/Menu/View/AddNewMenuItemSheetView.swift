@@ -111,15 +111,17 @@ struct AddNewMenuItemSheetView: View {
 
     func submit() {
         guard let selectedImage else { return }
+
         let imagePNGData = ImageRenderer(content: selectedImage).uiImage?.pngData()
 
-        viewModel.menuItems.append(
-            .init(imageName: newMenuItemTitle,
-                  image: imagePNGData,
-                  title: newMenuItemTitle,
-                  category: selectedCategory,
-                  price: newMenuItemPrice)
-        )
+        let newItem: MenuItem = .init(
+            imageName: newMenuItemTitle,
+            image: imagePNGData,
+            title: newMenuItemTitle,
+            category: selectedCategory,
+            price: newMenuItemPrice)
+
+        viewModel.addNewMenuItem(with: newItem)
 
         presentAddMenuItemSheetView = false
     }

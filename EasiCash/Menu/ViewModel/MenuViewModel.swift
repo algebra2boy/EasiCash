@@ -7,7 +7,10 @@
 
 import Foundation
 
-@Observable class MenuViewModel {
+@Observable @MainActor class MenuViewModel {
+
+    @ObservationIgnored
+    private var dataSource: MenuDataSource?
 
     var menuItems: [MenuItem]
 
@@ -25,9 +28,22 @@ import Foundation
         self._customerSelectedItems.items.count > 0
     }
 
-    init(menuItems: [MenuItem] = [], customerSelectedItems: CheckOutList = .init()) {
-        self.menuItems = menuItems
-        self.customerSelectedItems = customerSelectedItems
+    init(menuItems: [MenuItem] = [], customerSelectedItems: CheckOutList = .init(), isInProductionMode: Bool = true) {
+        if isInProductionMode {
+            self.dataSource = MenuDataSource.shared
+            self.menuItems = self.dataSource?.fetchMenuItems() ?? []
+            print("menuItems", menuItems)
+            self.customerSelectedItems = customerSelectedItems
+        } else {
+            self.dataSource = nil
+            self.menuItems = menuItems
+            self.customerSelectedItems = customerSelectedItems
+        }
+    }
+
+    func addNewMenuItem(with item: MenuItem) {
+        guard let dataSource else { return }
+        dataSource.addNewMenuItem(with: item)
     }
 
     func addOrder(with item: MenuItem) {
