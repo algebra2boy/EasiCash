@@ -8,13 +8,13 @@
 import SwiftUI
 import TipKit
 
-public struct PreviewableTipViewModifier: ViewModifier {
-    public func body(content: Content) -> some View {
+struct PreviewableTipViewModifier: ViewModifier {
+    func body(content: Content) -> some View {
         content
-            .task { Self.initializeTipKit() }
+            .task { initializeTipKit() }
     }
 
-    static func initializeTipKit() {
+    func initializeTipKit() {
         do {
             try Tips.configure([
                 .displayFrequency(.immediate),
