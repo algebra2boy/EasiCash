@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import SwiftData
 
 struct ContentView: View {
 
@@ -25,7 +24,11 @@ struct ContentView: View {
     // we can get model context through any data source
     // model context is exposed through menu data source for the sake of accessing it
     func consoleSQLiteDBURL() {
-        print(MenuDataSource.shared.getModelContext().sqliteCommand)
+        if Platform.isSimulator {
+            print(MenuDataSource.shared(isMock: true).getModelContext().sqliteCommand)
+        } else {
+            print(MenuDataSource.shared(isMock: false).getModelContext().sqliteCommand)
+        }
     }
 }
 
