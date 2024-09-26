@@ -64,7 +64,7 @@ struct MenuGridGalleryView: View {
 #Preview {
     NavigationStack {
         MenuGridGalleryView(submissionTapped: .constant(false))
-            .environment(MenuViewModel.mock)
+            .environment(MenuViewModel())
             .previewableTip()
     }
 }

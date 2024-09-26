@@ -17,18 +17,14 @@ struct ContentView: View {
         EasiCashMainTabView()
             .environment(menuViewModel)
             .environment(saleViewModel)
-            .onAppear(perform: consoleSQLiteDBURL)
+            .onAppear { consoleSQLiteDBURL() }
     }
 
     // find where SQLiteDB is in local machine
     // we can get model context through any data source
     // model context is exposed through menu data source for the sake of accessing it
     func consoleSQLiteDBURL() {
-        if Platform.isSimulator {
-            print(MenuDataSource.shared(isMock: true).getModelContext().sqliteCommand)
-        } else {
-            print(MenuDataSource.shared(isMock: false).getModelContext().sqliteCommand)
-        }
+        print(MenuDataSource.shared.sqliteCommand)
     }
 }
 

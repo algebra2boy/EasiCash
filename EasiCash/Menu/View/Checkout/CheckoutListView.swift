@@ -141,7 +141,7 @@ struct CheckoutListView: View {
 
 #Preview("with items") {
     CheckoutListView(submissionTapped: .constant(false))
-        .environment(MenuViewModel.mock)
+        .environment(MenuViewModel())
         .environment(SaleViewModel.mock)
 }
 

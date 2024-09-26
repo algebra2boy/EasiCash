@@ -28,8 +28,8 @@ import Foundation
         self._customerSelectedItems.items.count > 0
     }
 
-    init(menuItems: [MenuItem] = [], customerSelectedItems: CheckOutList = .init(), isMock: Bool = false) {
-        self.dataSource = MenuDataSource.shared(isMock: isMock)
+    init(menuItems: [MenuItem] = [], customerSelectedItems: CheckOutList = .init()) {
+        self.dataSource = MenuDataSource.shared
         self.menuItems = self.dataSource?.fetchMenuItems() ?? []
         self.customerSelectedItems = customerSelectedItems
     }
@@ -42,35 +42,29 @@ import Foundation
     func addOrder(with item: MenuItem) {
 
         let indexWhereItemExists = customerSelectedItems.items.firstIndex { $0.id == item.id }
-        //
-        //        if let index = indexWhereItemExists {
-        //            self.customerSelectedItems.items[index].quantity += 1
-        //        } else {
-        //            self.customerSelectedItems.items.append(item)
-        //        }
+//
+//        if let index = indexWhereItemExists {
+//            self.customerSelectedItems.items[index].quantity += 1
+//        } else {
+//            self.customerSelectedItems.items.append(item)
+//        }
     }
 
     func removeOrder(with item: MenuItem) {
 
         let indexWhereItemExists = customerSelectedItems.items.firstIndex { $0.id == item.id }
 
-        //        if let index = indexWhereItemExists {
-        //            let quantity = self.customerSelectedItems.items[index].quantity
-        //            if quantity > 1 {
-        //                self.customerSelectedItems.items[index].quantity -= 1
-        //            } else if quantity == 1 {
-        //                self.customerSelectedItems.items.remove(at: index)
-        //            }
-        //        }
+//        if let index = indexWhereItemExists {
+//            let quantity = self.customerSelectedItems.items[index].quantity
+//            if quantity > 1 {
+//                self.customerSelectedItems.items[index].quantity -= 1
+//            } else if quantity == 1 {
+//                self.customerSelectedItems.items.remove(at: index)
+//            }
+//        }
     }
 
     func emptyOrder() {
         self.customerSelectedItems = .init(items: [])
-    }
-}
-
-extension MenuViewModel {
-    static var mock: MenuViewModel {
-        .init(isMock: true)
     }
 }

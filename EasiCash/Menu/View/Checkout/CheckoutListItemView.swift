@@ -86,9 +86,9 @@ struct CheckoutListItemView: View {
 
 #Preview {
 
-    @Previewable @State var item: MenuItem = MenuViewModel.mock.menuItems[0]
+    @Previewable @State var item: MenuItem = MenuViewModel().menuItems[0]
 
-    return List {
+    List {
         CheckoutListItemView(item: $item, itemDeleteHandler: {})
     }
 }

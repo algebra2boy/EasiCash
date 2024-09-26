@@ -6,41 +6,40 @@
 //
 
 import SwiftData
+import Foundation
 
 class MenuDataSource {
-    
+
     private let modelContainer: ModelContainer
 
     private let modelContext: ModelContext
 
-    private let isMock: Bool = false
+    @MainActor
+    static var shared = MenuDataSource()
 
     @MainActor
-    static func shared(isMock: Bool = false) -> MenuDataSource {
-        .init(isMock: isMock)
-    }
+    private init() {
+        let isPreview: Bool = Platform.isPreview
+        let configurations = isPreview
+        ? ModelConfiguration(isStoredInMemoryOnly: true)
+        : ModelConfiguration(isStoredInMemoryOnly: false)
 
-    @MainActor
-    private init(isMock: Bool = false) {
-        if isMock {
-            let configurations = ModelConfiguration(isStoredInMemoryOnly: true)
-            
-            // swiftlint:disable:next force_try
-            self.modelContainer = try! ModelContainer(for: MenuItem.self, CheckOutList.self, configurations: configurations)
-            self.modelContext = modelContainer.mainContext
-            self.modelContext.autosaveEnabled = true // false by default if making a new context by hand
-            
+        // swiftlint:disable:next force_try
+        self.modelContainer = try! ModelContainer(for: MenuItem.self, CheckOutList.self, configurations: configurations)
+        self.modelContext = modelContainer.mainContext
+        self.modelContext.autosaveEnabled = true // false by default if making a new context by hand
+
+        if isPreview {
             for menuItem in Self.sampleMeunItems {
                 self.modelContext.insert(menuItem)
             }
-            
+
             self.modelContext.insert(Self.sampleCustomerSelectedItems)
-        } else {
-            // swiftlint:disable:next force_try
-            self.modelContainer = try! ModelContainer(for: MenuItem.self, CheckOutList.self)
-            self.modelContext = modelContainer.mainContext
-            self.modelContext.autosaveEnabled = true // false by default if making a new context by hand
         }
+    }
+
+    func getModelContainer() -> ModelContainer {
+        modelContainer
     }
 
     func getModelContext() -> ModelContext {

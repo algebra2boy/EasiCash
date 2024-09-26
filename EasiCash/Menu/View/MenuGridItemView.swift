@@ -64,7 +64,7 @@ struct MenuGridItemView: View {
 }
 
 #Preview {
-    let mock: MenuViewModel = MenuViewModel.mock
-    MenuGridItemView(item: mock.menuItems[0])
-        .environment(mock)
+    let viewModel: MenuViewModel = MenuViewModel()
+    MenuGridItemView(item: viewModel.menuItems[0])
+        .environment(viewModel)
 }

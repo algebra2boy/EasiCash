@@ -8,9 +8,10 @@
 import Foundation
 import SwiftData
 
-extension ModelContext {
+extension MenuDataSource {
     var sqliteCommand: String {
-        if let url = container.configurations.first?.url.path(percentEncoded: false) {
+        if let url =
+            self.getModelContainer().configurations.first?.url.path(percentEncoded: false) {
             "sqlite3 \"\(url)\""
         } else {
             "No SQLite database found."
