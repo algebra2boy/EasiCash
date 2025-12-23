@@ -5,8 +5,8 @@
 //  Created by Yongye on 8/16/24.
 //
 
-import SwiftUI
 import PhotosUI
+import SwiftUI
 
 struct MenuGridGalleryView: View {
 
@@ -49,14 +49,13 @@ struct MenuGridGalleryView: View {
         .sheet(isPresented: $presentAddMenuItemSheetView) {
             AddNewMenuItemSheetView(presentAddMenuItemSheetView: $presentAddMenuItemSheetView)
         }
-        .overlay(
-            Group {
-                if submissionTapped {
-                    OrderSubmissionView(submissionTapped: $submissionTapped)
-                        .transition(.scale)
-                }
+        .alert("Order Submitted", isPresented: $submissionTapped) {
+            Button("OK", role: .cancel) {
+                submissionTapped = false
             }
-        )
+        } message: {
+            Text("Your order has been submitted!")
+        }
     }
 }
 
