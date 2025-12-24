@@ -50,6 +50,9 @@ struct MenuGridGalleryView: View {
         .sheet(isPresented: $presentAddMenuItemSheetView) {
             AddNewMenuItemSheetView(presentAddMenuItemSheetView: $presentAddMenuItemSheetView)
         }
+        .onAppear {
+            viewModel.refreshMenuItems()
+        }
 //        .overlay(
 //            Group {
 //                if submissionTapped {

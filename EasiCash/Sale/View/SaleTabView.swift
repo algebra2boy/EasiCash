@@ -61,6 +61,9 @@ struct SaleTabView: View {
 
                 }
             }
+            .onAppear {
+                viewModel.refreshOrders()
+            }
 
         }
     }

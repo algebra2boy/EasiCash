@@ -25,7 +25,10 @@ class MenuDataSource {
         : ModelConfiguration(isStoredInMemoryOnly: false)
 
         // swiftlint:disable:next force_try
-        self.modelContainer = try! ModelContainer(for: MenuItem.self, CheckOutList.self, configurations: configurations)
+        self.modelContainer = try! ModelContainer(
+            for: MenuItem.self, CheckOutList.self, Order.self,
+            configurations: configurations
+        )
         self.modelContext = modelContainer.mainContext
         self.modelContext.autosaveEnabled = true // false by default if making a new context by hand
 
@@ -59,6 +62,30 @@ class MenuDataSource {
 
     func addNewMenuItem(with item: MenuItem) {
         modelContext.insert(item)
+    }
+
+    func updateMenuItem(_ item: MenuItem) {
+        // SwiftData automatically tracks changes, but we can explicitly save if needed
+        try? modelContext.save()
+    }
+
+    func deleteMenuItem(_ item: MenuItem) {
+        modelContext.delete(item)
+    }
+
+    func fetchOrders() -> [Order] {
+        do {
+            let descriptor = FetchDescriptor<Order>(sortBy: [SortDescriptor(\.createdAt, order: .reverse)])
+            let orders = try modelContext.fetch(descriptor)
+            return orders
+        } catch {
+            print("error fetching orders: \(error)")
+            return []
+        }
+    }
+    
+    func addOrder(_ order: Order) {
+        modelContext.insert(order)
     }
 }
 

@@ -12,6 +12,9 @@ struct MenuGridItemView: View {
     @Environment(MenuViewModel.self) var menuViewModel: MenuViewModel
 
     var item: MenuItem
+    
+    @State private var presentEditMenuItemSheetView: Bool = false
+    @State private var tapWorkItem: DispatchWorkItem?
 
     private var quantity: Int {
         let filteredItems = menuViewModel.customerSelectedItems.items.filter { item.id == $0.id }
@@ -20,7 +23,6 @@ struct MenuGridItemView: View {
     }
 
     var body: some View {
-
         VStack(alignment: .leading) {
             if let imageData = item.image, let image = UIImage(data: imageData) {
                 Image(uiImage: image).roundedImageStyle()
@@ -49,15 +51,43 @@ struct MenuGridItemView: View {
                     }
             }
         }
+        .contentShape(Rectangle())
+        .highPriorityGesture(
+            TapGesture(count: 2)
+                .onEnded { _ in
+                    // Cancel single tap if double tap detected
+                    tapWorkItem?.cancel()
+                    withAnimation {
+                        menuViewModel.removeOrder(with: item)
+                    }
+                }
+        )
         .onTapGesture {
-            withAnimation {
-                menuViewModel.addOrder(with: item)
+            // Handle single tap with a delay to detect double taps
+            let workItem = DispatchWorkItem {
+                withAnimation {
+                    menuViewModel.addOrder(with: item)
+                }
+            }
+            tapWorkItem?.cancel()
+            tapWorkItem = workItem
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: workItem)
+        }
+        .contextMenu {
+            Button {
+                presentEditMenuItemSheetView = true
+            } label: {
+                Label("Edit", systemImage: "pencil")
+            }
+            
+            Button(role: .destructive) {
+                menuViewModel.deleteMenuItem(item)
+            } label: {
+                Label("Delete", systemImage: "trash")
             }
         }
-        .onTapGesture(count: 2) {
-            withAnimation {
-                menuViewModel.removeOrder(with: item)
-            }
+        .sheet(isPresented: $presentEditMenuItemSheetView) {
+            EditMenuItemSheetView(presentEditMenuItemSheetView: $presentEditMenuItemSheetView, menuItem: item)
         }
     }
 

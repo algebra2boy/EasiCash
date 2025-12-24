@@ -37,6 +37,23 @@ import Foundation
     func addNewMenuItem(with item: MenuItem) {
         guard let dataSource else { return }
         dataSource.addNewMenuItem(with: item)
+        refreshMenuItems()
+    }
+
+    func updateMenuItem(_ item: MenuItem) {
+        guard let dataSource else { return }
+        dataSource.updateMenuItem(item)
+        refreshMenuItems()
+    }
+    
+    func deleteMenuItem(_ item: MenuItem) {
+        guard let dataSource else { return }
+        dataSource.deleteMenuItem(item)
+        refreshMenuItems()
+    }
+    
+    func refreshMenuItems() {
+        self.menuItems = dataSource?.fetchMenuItems() ?? []
     }
 
     func addOrder(with item: MenuItem) {

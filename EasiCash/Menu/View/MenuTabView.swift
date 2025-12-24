@@ -16,7 +16,6 @@ struct MenuTabView: View {
     var body: some View {
         NavigationStack {
             VStack {
-                // TODO: Fix the submission view
                 MenuGridGalleryView(submissionTapped: $submissionTapped)
             }
             .navigationTitle("Menu")
@@ -28,7 +27,6 @@ struct MenuTabView: View {
                 }
             }
             .inspector(isPresented: $isInspectorPresented) {
-                // TODO: Fix the submission view
                 CheckoutListView(submissionTapped: $submissionTapped)
             }
 

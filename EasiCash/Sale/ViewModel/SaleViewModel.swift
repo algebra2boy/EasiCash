@@ -7,12 +7,16 @@
 
 import Foundation
 
-@Observable class SaleViewModel {
+@Observable @MainActor class SaleViewModel {
+
+    @ObservationIgnored
+    private var dataSource: MenuDataSource?
 
     var saleHistory: [Order]
 
     init(saleHistory: [Order] = []) {
-        self.saleHistory = saleHistory
+        self.dataSource = MenuDataSource.shared
+        self.saleHistory = self.dataSource?.fetchOrders() ?? saleHistory
     }
 
     func getOverallSale() -> [BarchartSaleByAmount] {
@@ -85,7 +89,13 @@ import Foundation
     }
 
     func addSale(with checkoutList: CheckOutList, name: String, note: String, type: OrderType, totalPrice: Double) {
-        self.saleHistory.append(.init(user: name, note: note, price: totalPrice, items: checkoutList.items, type: type))
+        let newOrder = Order(user: name, note: note, price: totalPrice, items: checkoutList.items, type: type)
+        dataSource?.addOrder(newOrder)
+        self.saleHistory.append(newOrder)
+    }
+
+    func refreshOrders() {
+        self.saleHistory = dataSource?.fetchOrders() ?? []
     }
 
     static var mock: SaleViewModel {

@@ -6,20 +6,22 @@
 //
 
 import Foundation
+import SwiftData
 
-enum OrderType: String, CaseIterable {
+enum OrderType: String, CaseIterable, Codable {
     case online
     case inStore
 }
 
-struct Order: Identifiable {
-    let id: UUID
-    let user: String
-    let note: String
-    let price: Double
-    let items: [MenuItem]
-    let createdAt: Date
-    let type: OrderType
+@Model
+class Order: Identifiable {
+    var id: UUID
+    var user: String
+    var note: String
+    var price: Double
+    var items: [MenuItem]
+    var createdAt: Date
+    var type: OrderType
 
     init(
         id: UUID = UUID(),

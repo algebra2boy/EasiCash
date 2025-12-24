@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 @main
 struct EasiCashApp: App {
@@ -15,5 +16,6 @@ struct EasiCashApp: App {
             ContentView()
                 .previewableTip()
         }
+        .modelContainer(MenuDataSource.shared.getModelContainer())
     }
 }
