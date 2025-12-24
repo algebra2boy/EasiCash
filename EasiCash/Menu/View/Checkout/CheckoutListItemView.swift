@@ -46,6 +46,7 @@ struct CheckoutListItemView: View {
 
                 HStack {
                     Button {
+                        // Remove animation wrapper for instant response
                         if item.quantity > 1 {
                             item.quantity -= 1
                         } else {
@@ -53,9 +54,11 @@ struct CheckoutListItemView: View {
                         }
                     } label: {
                         Image(systemName: item.quantity > 1 ? "minus" : "trash")
+                            .font(.system(size: 16, weight: .medium))
                     }
                     .buttonStyle(.plain)
-                    .frame(width: 25, height: 50)
+                    .frame(width: 30, height: 30)
+                    .contentShape(Rectangle())
 
                     TextField("Quantity", value: $item.quantity, formatter: quantityFormatter)
                         .frame(width: 50)

@@ -77,15 +77,17 @@ import Foundation
     }
 
     func removeOrder(with item: MenuItem) {
-        let indexWhereItemExists = customerSelectedItems.items.firstIndex { $0.id == item.id }
-
-        if let index = indexWhereItemExists {
-            let quantity = self.customerSelectedItems.items[index].quantity
-            if quantity > 1 {
-                self.customerSelectedItems.items[index].quantity -= 1
-            } else if quantity == 1 {
-                self.customerSelectedItems.items.remove(at: index)
-            }
+        // Use firstIndex(where:) for better performance
+        guard let index = customerSelectedItems.items.firstIndex(where: { $0.id == item.id }) else {
+            return
+        }
+        
+        let quantity = self.customerSelectedItems.items[index].quantity
+        if quantity > 1 {
+            self.customerSelectedItems.items[index].quantity -= 1
+        } else {
+            // Remove item immediately without extra checks
+            self.customerSelectedItems.items.remove(at: index)
         }
     }
 

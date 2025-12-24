@@ -38,6 +38,7 @@ struct CheckoutListView: View {
                 Section {
                     ForEach($menuViewModel.customerSelectedItems.items) { item in
                         CheckoutListItemView(item: item) {
+                            // Remove without animation for instant response
                             menuViewModel.removeOrder(with: item.wrappedValue)
                         }
                     }

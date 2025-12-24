@@ -22,68 +22,63 @@ struct MenuGridItemView: View {
     }
 
     var body: some View {
-        Button {
-            withAnimation {
-                menuViewModel.addOrder(with: item)
-            }
-        } label: {
-            VStack(alignment: .leading) {
-                if let imageData = item.image, let image = UIImage(data: imageData) {
-                    Image(uiImage: image).roundedImageStyle()
+        VStack(alignment: .leading) {
+            if let imageData = item.image, let image = UIImage(data: imageData) {
+                Image(uiImage: image).roundedImageStyle()
 
-                } else {
-                    Image(item.imageName).roundedImageStyle()
-                }
+            } else {
+                Image(item.imageName).roundedImageStyle()
+            }
 
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(item.title)
-                        .font(.system(size: 24, weight: .medium))
-                    Text("Price: $\(String(format: "%.2f", item.price))")
-                        .font(.system(size: 18, weight: .regular))
-                }
-            }
-            .padding(.horizontal, 10)
-            .overlay(alignment: .topTrailing) {
-                if quantity > 0 {
-                    Circle()
-                        .fill(Color.red)
-                        .frame(width: 25)
-                        .padding([.horizontal, .vertical], 3)
-                        .overlay(alignment: .center) {
-                            Text("\(quantity)")
-                                .foregroundStyle(.white)
-                        }
-                }
-            }
-            .overlay(alignment: .topLeading) {
-                Menu {
-                    Button {
-                        presentEditMenuItemSheetView = true
-                    } label: {
-                        Label("Edit", systemImage: "pencil")
-                    }
-                    
-                    Button(role: .destructive) {
-                        menuViewModel.deleteMenuItem(item)
-                    } label: {
-                        Label("Delete", systemImage: "trash")
-                    }
-                } label: {
-                    Image(systemName: "ellipsis")
-                        .font(.system(size: 16, weight: .medium))
-                        .foregroundColor(.primary)
-                        .padding(8)
-                        .background(Color(.systemBackground).opacity(0.8))
-                        .clipShape(Circle())
-                        .shadow(radius: 2)
-                }
-                .padding(8)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(item.title)
+                    .font(.system(size: 24, weight: .medium))
+                Text("Price: $\(String(format: "%.2f", item.price))")
+                    .font(.system(size: 18, weight: .regular))
             }
         }
-        .buttonStyle(.plain)
-        .onTapGesture(count: 2) {
+        .padding(.horizontal, 10)
+        .overlay(alignment: .topTrailing) {
+            if quantity > 0 {
+                Circle()
+                    .fill(Color.red)
+                    .frame(width: 25, height: 25)
+                    .overlay(alignment: .center) {
+                        Text("\(quantity)")
+                            .foregroundStyle(.white)
+                            .font(.system(size: 12, weight: .bold))
+                    }
+                    .offset(x: 5, y: -5)
+            }
+        }
+        .overlay(alignment: .topLeading) {
+            Menu {
+                Button {
+                    presentEditMenuItemSheetView = true
+                } label: {
+                    Label("Edit", systemImage: "pencil")
+                }
+                
+                Button(role: .destructive) {
+                    menuViewModel.deleteMenuItem(item)
+                } label: {
+                    Label("Delete", systemImage: "trash")
+                }
+            } label: {
+                Image(systemName: "ellipsis")
+                    .font(.system(size: 16, weight: .medium))
+                    .foregroundColor(.primary)
+                    .padding(8)
+                    .background(Color(.systemBackground).opacity(0.8))
+                    .clipShape(Circle())
+                    .shadow(radius: 2)
+            }
+            .padding(8)
+        }
+        .contentShape(Rectangle())
+        .onTapGesture {
             withAnimation {
-                menuViewModel.removeOrder(with: item)
+                menuViewModel.addOrder(with: item)
             }
         }
         .sheet(isPresented: $presentEditMenuItemSheetView) {
