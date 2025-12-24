@@ -53,14 +53,6 @@ struct MenuGridGalleryView: View {
         .onAppear {
             viewModel.refreshMenuItems()
         }
-//        .overlay(
-//            Group {
-//                if submissionTapped {
-//                    OrderSubmissionView(submissionTapped: $submissionTapped)
-//                        .transition(.scale)
-//                }
-//            }
-//        )
     }
 }
 

@@ -57,14 +57,18 @@ import Foundation
     }
 
     func addOrder(with item: MenuItem) {
-        let indexWhereItemExists = customerSelectedItems.items.firstIndex { $0.id == item.id }
+        // Match cart items by title and price instead of ID to handle cart items with unique UUIDs
+        let indexWhereItemExists = customerSelectedItems.items.firstIndex { 
+            $0.title == item.title && $0.price == item.price 
+        }
         
         if let index = indexWhereItemExists {
             self.customerSelectedItems.items[index].quantity += 1
         } else {
-            // Create a copy of the item for the cart
+            // Create a copy of the item for the cart with a new UUID to avoid SwiftData conflicts
+            // This ensures cart items are unique entities that won't duplicate the original menu items
             let cartItem = MenuItem(
-                id: item.id,
+                id: UUID(), // Generate new UUID for cart item to prevent duplicate SwiftData entities
                 imageName: item.imageName,
                 image: item.image,
                 title: item.title,
@@ -77,8 +81,10 @@ import Foundation
     }
 
     func removeOrder(with item: MenuItem) {
-        // Use firstIndex(where:) for better performance
-        guard let index = customerSelectedItems.items.firstIndex(where: { $0.id == item.id }) else {
+        // Match cart items by title and price instead of ID to handle cart items with unique UUIDs
+        guard let index = customerSelectedItems.items.firstIndex(where: { 
+            $0.title == item.title && $0.price == item.price 
+        }) else {
             return
         }
         

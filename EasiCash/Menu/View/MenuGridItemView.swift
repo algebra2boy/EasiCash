@@ -17,7 +17,10 @@ struct MenuGridItemView: View {
     @State private var showDeleteConfirmation: Bool = false
 
     private var quantity: Int {
-        let filteredItems = menuViewModel.customerSelectedItems.items.filter { item.id == $0.id }
+        // Match cart items by title and price instead of ID to handle cart items with unique UUIDs
+        let filteredItems = menuViewModel.customerSelectedItems.items.filter { 
+            $0.title == item.title && $0.price == item.price 
+        }
         if filteredItems.isEmpty { return 0 }
         return filteredItems[0].quantity
     }

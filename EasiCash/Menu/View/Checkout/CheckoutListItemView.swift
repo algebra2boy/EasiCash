@@ -88,7 +88,7 @@ struct CheckoutListItemView: View {
         }
         .swipeActions(edge: .trailing, allowsFullSwipe: false) {
             Button(role: .destructive) {
-                // TODO: add delete handler here
+                showDeleteConfirmation = true
             } label: {
                 Label("Delete", systemImage: "trash")
             }
