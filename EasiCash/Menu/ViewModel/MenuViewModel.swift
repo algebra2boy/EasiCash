@@ -57,28 +57,36 @@ import Foundation
     }
 
     func addOrder(with item: MenuItem) {
-
         let indexWhereItemExists = customerSelectedItems.items.firstIndex { $0.id == item.id }
-//
-//        if let index = indexWhereItemExists {
-//            self.customerSelectedItems.items[index].quantity += 1
-//        } else {
-//            self.customerSelectedItems.items.append(item)
-//        }
+        
+        if let index = indexWhereItemExists {
+            self.customerSelectedItems.items[index].quantity += 1
+        } else {
+            // Create a copy of the item for the cart
+            let cartItem = MenuItem(
+                id: item.id,
+                imageName: item.imageName,
+                image: item.image,
+                title: item.title,
+                category: item.category,
+                price: item.price,
+                quantity: 1
+            )
+            self.customerSelectedItems.items.append(cartItem)
+        }
     }
 
     func removeOrder(with item: MenuItem) {
-
         let indexWhereItemExists = customerSelectedItems.items.firstIndex { $0.id == item.id }
 
-//        if let index = indexWhereItemExists {
-//            let quantity = self.customerSelectedItems.items[index].quantity
-//            if quantity > 1 {
-//                self.customerSelectedItems.items[index].quantity -= 1
-//            } else if quantity == 1 {
-//                self.customerSelectedItems.items.remove(at: index)
-//            }
-//        }
+        if let index = indexWhereItemExists {
+            let quantity = self.customerSelectedItems.items[index].quantity
+            if quantity > 1 {
+                self.customerSelectedItems.items[index].quantity -= 1
+            } else if quantity == 1 {
+                self.customerSelectedItems.items.remove(at: index)
+            }
+        }
     }
 
     func emptyOrder() {

@@ -14,7 +14,6 @@ struct MenuGridItemView: View {
     var item: MenuItem
     
     @State private var presentEditMenuItemSheetView: Bool = false
-    @State private var tapWorkItem: DispatchWorkItem?
 
     private var quantity: Int {
         let filteredItems = menuViewModel.customerSelectedItems.items.filter { item.id == $0.id }
@@ -23,67 +22,68 @@ struct MenuGridItemView: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading) {
-            if let imageData = item.image, let image = UIImage(data: imageData) {
-                Image(uiImage: image).roundedImageStyle()
+        Button {
+            withAnimation {
+                menuViewModel.addOrder(with: item)
+            }
+        } label: {
+            VStack(alignment: .leading) {
+                if let imageData = item.image, let image = UIImage(data: imageData) {
+                    Image(uiImage: image).roundedImageStyle()
 
-            } else {
-                Image(item.imageName).roundedImageStyle()
-            }
-
-            VStack(alignment: .leading, spacing: 2) {
-                Text(item.title)
-                    .font(.system(size: 24, weight: .medium))
-                Text("Price: $\(String(format: "%.2f", item.price))")
-                    .font(.system(size: 18, weight: .regular))
-            }
-        }
-        .padding(.horizontal, 10)
-        .overlay(alignment: .topTrailing) {
-            if quantity > 0 {
-                Circle()
-                    .fill(Color.red)
-                    .frame(width: 25)
-                    .padding([.horizontal, .vertical], 3)
-                    .overlay(alignment: .center) {
-                        Text("\(quantity)")
-                            .foregroundStyle(.white)
-                    }
-            }
-        }
-        .contentShape(Rectangle())
-        .highPriorityGesture(
-            TapGesture(count: 2)
-                .onEnded { _ in
-                    // Cancel single tap if double tap detected
-                    tapWorkItem?.cancel()
-                    withAnimation {
-                        menuViewModel.removeOrder(with: item)
-                    }
+                } else {
+                    Image(item.imageName).roundedImageStyle()
                 }
-        )
-        .onTapGesture {
-            // Handle single tap with a delay to detect double taps
-            let workItem = DispatchWorkItem {
-                withAnimation {
-                    menuViewModel.addOrder(with: item)
+
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(item.title)
+                        .font(.system(size: 24, weight: .medium))
+                    Text("Price: $\(String(format: "%.2f", item.price))")
+                        .font(.system(size: 18, weight: .regular))
                 }
             }
-            tapWorkItem?.cancel()
-            tapWorkItem = workItem
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: workItem)
-        }
-        .contextMenu {
-            Button {
-                presentEditMenuItemSheetView = true
-            } label: {
-                Label("Edit", systemImage: "pencil")
+            .padding(.horizontal, 10)
+            .overlay(alignment: .topTrailing) {
+                if quantity > 0 {
+                    Circle()
+                        .fill(Color.red)
+                        .frame(width: 25)
+                        .padding([.horizontal, .vertical], 3)
+                        .overlay(alignment: .center) {
+                            Text("\(quantity)")
+                                .foregroundStyle(.white)
+                        }
+                }
             }
-            
-            Button(role: .destructive) {
-                menuViewModel.deleteMenuItem(item)
-            } label: {
-                Label("Delete", systemImage: "trash")
+            .overlay(alignment: .topLeading) {
+                Menu {
+                    Button {
+                        presentEditMenuItemSheetView = true
+                    } label: {
+                        Label("Edit", systemImage: "pencil")
+                    }
+                    
+                    Button(role: .destructive) {
+                        menuViewModel.deleteMenuItem(item)
+                    } label: {
+                        Label("Delete", systemImage: "trash")
+                    }
+                } label: {
+                    Image(systemName: "ellipsis")
+                        .font(.system(size: 16, weight: .medium))
+                        .foregroundColor(.primary)
+                        .padding(8)
+                        .background(Color(.systemBackground).opacity(0.8))
+                        .clipShape(Circle())
+                        .shadow(radius: 2)
+                }
+                .padding(8)
+            }
+        }
+        .buttonStyle(.plain)
+        .onTapGesture(count: 2) {
+            withAnimation {
+                menuViewModel.removeOrder(with: item)
             }
         }
         .sheet(isPresented: $presentEditMenuItemSheetView) {
