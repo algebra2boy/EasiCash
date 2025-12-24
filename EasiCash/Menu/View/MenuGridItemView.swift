@@ -14,6 +14,7 @@ struct MenuGridItemView: View {
     var item: MenuItem
     
     @State private var presentEditMenuItemSheetView: Bool = false
+    @State private var showDeleteConfirmation: Bool = false
 
     private var quantity: Int {
         let filteredItems = menuViewModel.customerSelectedItems.items.filter { item.id == $0.id }
@@ -60,7 +61,7 @@ struct MenuGridItemView: View {
                 }
                 
                 Button(role: .destructive) {
-                    menuViewModel.deleteMenuItem(item)
+                    showDeleteConfirmation = true
                 } label: {
                     Label("Delete", systemImage: "trash")
                 }
@@ -83,6 +84,14 @@ struct MenuGridItemView: View {
         }
         .sheet(isPresented: $presentEditMenuItemSheetView) {
             EditMenuItemSheetView(presentEditMenuItemSheetView: $presentEditMenuItemSheetView, menuItem: item)
+        }
+        .confirmationDialog("Delete Menu Item", isPresented: $showDeleteConfirmation, titleVisibility: .visible) {
+            Button("Delete", role: .destructive) {
+                menuViewModel.deleteMenuItem(item)
+            }
+            Button("Cancel", role: .cancel) { }
+        } message: {
+            Text("Are you sure you want to delete \"\(item.title)\"? This action cannot be undone.")
         }
     }
 

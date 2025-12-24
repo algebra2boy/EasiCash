@@ -97,6 +97,11 @@ import Foundation
     func refreshOrders() {
         self.saleHistory = dataSource?.fetchOrders() ?? []
     }
+    
+    func deleteOrder(_ order: Order) {
+        dataSource?.deleteOrder(order)
+        refreshOrders()
+    }
 
     static var mock: SaleViewModel {
         let calendar = Calendar.current

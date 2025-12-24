@@ -11,6 +11,8 @@ struct CheckoutListItemView: View {
     @Binding var item: MenuItem
 
     var itemDeleteHandler: () -> Void
+    
+    @State private var showDeleteConfirmation: Bool = false
 
     private var quantityFormatter: NumberFormatter {
         let formatter = NumberFormatter()
@@ -50,7 +52,7 @@ struct CheckoutListItemView: View {
                         if item.quantity > 1 {
                             item.quantity -= 1
                         } else {
-                            itemDeleteHandler()
+                            showDeleteConfirmation = true
                         }
                     } label: {
                         Image(systemName: item.quantity > 1 ? "minus" : "trash")
@@ -59,6 +61,14 @@ struct CheckoutListItemView: View {
                     .buttonStyle(.plain)
                     .frame(width: 30, height: 30)
                     .contentShape(Rectangle())
+                    .confirmationDialog("Remove Item", isPresented: $showDeleteConfirmation, titleVisibility: .visible) {
+                        Button("Remove", role: .destructive) {
+                            itemDeleteHandler()
+                        }
+                        Button("Cancel", role: .cancel) { }
+                    } message: {
+                        Text("Are you sure you want to remove \"\(item.title)\" from the order?")
+                    }
 
                     TextField("Quantity", value: $item.quantity, formatter: quantityFormatter)
                         .frame(width: 50)

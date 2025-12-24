@@ -87,6 +87,10 @@ class MenuDataSource {
     func addOrder(_ order: Order) {
         modelContext.insert(order)
     }
+    
+    func deleteOrder(_ order: Order) {
+        modelContext.delete(order)
+    }
 }
 
 extension MenuDataSource {

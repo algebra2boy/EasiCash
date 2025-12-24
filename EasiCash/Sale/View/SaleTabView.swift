@@ -15,6 +15,9 @@ struct SaleTabView: View {
     @State private var isInspectorPresented: Bool = false
 
     @State private var selectedOrderID: Order.ID?
+    
+    @State private var showDeleteConfirmation: Bool = false
+    @State private var orderToDelete: Order?
 
     private var selectedOrder: Order? {
         guard let selectedOrderID else { return nil }
@@ -49,10 +52,41 @@ struct SaleTabView: View {
             .navigationTitle("Sales")
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
-                    Button(action: presentItemInspector) {
-                        Image(systemName: "info.bubble.fill")
+                    HStack {
+                        Button(role: .destructive) {
+                            if let selectedOrderID = selectedOrderID,
+                               let order = viewModel.saleHistory.first(where: { $0.id == selectedOrderID }) {
+                                orderToDelete = order
+                                showDeleteConfirmation = true
+                            }
+                        } label: {
+                            Label("Delete", systemImage: "trash")
+                                .foregroundStyle(.red)
+                        }
+                        .disabled(selectedOrderID == nil)
+                        .confirmationDialog("Delete Order", isPresented: $showDeleteConfirmation, titleVisibility: .visible) {
+                            Button("Delete", role: .destructive) {
+                                if let order = orderToDelete {
+                                    viewModel.deleteOrder(order)
+                                    if selectedOrderID == order.id {
+                                        selectedOrderID = nil
+                                        isInspectorPresented = false
+                                    }
+                                    orderToDelete = nil
+                                }
+                            }
+                            Button("Cancel", role: .cancel) {
+                                orderToDelete = nil
+                            }
+                        } message: {
+                            Text("Are you sure you want to delete this order? This action cannot be undone.")
+                        }
+                        
+                        Button(action: presentItemInspector) {
+                            Image(systemName: "info.bubble.fill")
+                        }
+                        .disabled(selectedOrderID == nil)
                     }
-                    .disabled(selectedOrderID == nil)
                 }
             }
             .inspector(isPresented: $isInspectorPresented) {
