@@ -8,6 +8,7 @@ import SwiftUI
 
 struct CheckoutListItemView: View {
 
+    @Environment(MenuViewModel.self) var menuViewModel
     @Binding var item: MenuItem
 
     var itemDeleteHandler: () -> Void
@@ -75,9 +76,16 @@ struct CheckoutListItemView: View {
                         .textFieldStyle(.roundedBorder)
                         .multilineTextAlignment(.center)
                         .keyboardType(.numberPad)
+                        .onChange(of: item.quantity) { _, newValue in
+                            if newValue == 0 {
+                                menuViewModel.customerSelectedItems.items.removeAll {
+                                    $0.id == item.id
+                                }
+                            }
+                        }
 
                     Button {
-                        item.quantity += 1
+                        menuViewModel.addOrder(with: item)
                     } label: {
                         Image(systemName: "plus")
                     }
@@ -99,9 +107,8 @@ struct CheckoutListItemView: View {
 
 #Preview {
 
-    @Previewable @State var item: MenuItem = MenuViewModel().menuItems[0]
+    @Previewable @State var item: MenuItem = MenuViewModel.mock.menuItems[0]
 
-    List {
-        CheckoutListItemView(item: $item, itemDeleteHandler: {})
-    }
+    CheckoutListItemView(item: $item)
+        .environment(MenuViewModel.mock)
 }
