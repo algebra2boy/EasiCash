@@ -10,7 +10,7 @@ import SwiftUI
 func bentoBoxView<Content: View>(@ViewBuilder content: () -> Content) -> some View {
     ZStack {
         RoundedRectangle(cornerRadius: 20)
-            .fill(Color.white.opacity(0.9))
+            .fill(Color(.systemBackground).opacity(0.9))
             .shadow(radius: 5)
         content()
     }

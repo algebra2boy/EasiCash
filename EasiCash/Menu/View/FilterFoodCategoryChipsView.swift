@@ -15,18 +15,20 @@ struct FilterFoodCategoryChipsView: View {
         HStack(spacing: 20) {
             ForEach(MenuCategory.allCases, id: \.self) { category in
                 Button {
-                    selectedCategory = category
+                    withAnimation(.linear) {
+                        selectedCategory = category
+                    }
                 } label: {
                     Text(category.rawValue)
                         .padding(15)
                         .font(.system(size: 18, weight: .bold))
-                        .foregroundStyle(selectedCategory == category ? Color.white : Color.black)
+                        .foregroundStyle(selectedCategory == category ? Color.white : Color.primary)
                         .background(
                             RoundedRectangle(cornerRadius: 25)
                                 .fill(
                                     selectedCategory == category
-                                    ? Color.blue.opacity(2)
-                                    : Color.gray.opacity(0.1))
+                                    ? Color.blue
+                                    : Color.secondary.opacity(0.1))
                         )
                 }
                 .buttonStyle(.plain)

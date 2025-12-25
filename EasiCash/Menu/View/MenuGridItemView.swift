@@ -12,32 +12,29 @@ struct MenuGridItemView: View {
     @Environment(MenuViewModel.self) var menuViewModel: MenuViewModel
 
     var item: MenuItem
+    
+    @State private var presentEditMenuItemSheetView: Bool = false
+    @State private var showDeleteConfirmation: Bool = false
 
     private var quantity: Int {
-        let filteredItems = menuViewModel.customerSelectedItems.items.filter { item.id == $0.id }
+        // Match cart items by title and price instead of ID to handle cart items with unique UUIDs
+        let filteredItems = menuViewModel.customerSelectedItems.items.filter { 
+            $0.title == item.title && $0.price == item.price 
+        }
         if filteredItems.isEmpty { return 0 }
         return filteredItems[0].quantity
     }
 
     var body: some View {
-
         VStack(alignment: .leading) {
-            if let image = item.image {
-                image
-                    .resizable()
-                    .frame(width: 150, height: 150)
-                    .scaledToFit()
-                    .clipShape(RoundedRectangle(cornerRadius: 10))
+            if let imageData = item.image, let image = UIImage(data: imageData) {
+                Image(uiImage: image).roundedImageStyle()
 
             } else {
-                Image(item.imageName)
-                    .resizable()
-                    .frame(width: 150, height: 150)
-                    .scaledToFit()
-                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                Image(item.imageName).roundedImageStyle()
             }
 
-            VStack(alignment: .leading) {
+            VStack(alignment: .leading, spacing: 2) {
                 Text(item.title)
                     .font(.system(size: 24, weight: .medium))
                 Text("Price: $\(String(format: "%.2f", item.price))")
@@ -49,31 +46,62 @@ struct MenuGridItemView: View {
             if quantity > 0 {
                 Circle()
                     .fill(Color.red)
-                    .frame(width: 25)
-                    .padding(.horizontal, 15)
-                    .padding(.vertical, 8)
-                    .overlay {
+                    .frame(width: 25, height: 25)
+                    .overlay(alignment: .center) {
                         Text("\(quantity)")
                             .foregroundStyle(.white)
+                            .font(.system(size: 12, weight: .bold))
                     }
+                    .offset(x: 5, y: -5)
             }
         }
+        .overlay(alignment: .topLeading) {
+            Menu {
+                Button {
+                    presentEditMenuItemSheetView = true
+                } label: {
+                    Label("Edit", systemImage: "pencil")
+                }
+                
+                Button(role: .destructive) {
+                    showDeleteConfirmation = true
+                } label: {
+                    Label("Delete", systemImage: "trash")
+                }
+            } label: {
+                Image(systemName: "ellipsis")
+                    .font(.system(size: 16, weight: .medium))
+                    .foregroundColor(.primary)
+                    .padding(8)
+                    .background(Color(.systemBackground).opacity(0.8))
+                    .clipShape(Circle())
+                    .shadow(radius: 2)
+            }
+            .padding(8)
+        }
+        .contentShape(Rectangle())
         .onTapGesture {
             withAnimation {
                 menuViewModel.addOrder(with: item)
             }
         }
-        .onTapGesture(count: 2) {
-            withAnimation {
-                menuViewModel.removeOrder(with: item)
-            }
+        .sheet(isPresented: $presentEditMenuItemSheetView) {
+            EditMenuItemSheetView(presentEditMenuItemSheetView: $presentEditMenuItemSheetView, menuItem: item)
         }
-        .shadow(radius: 5)
+        .confirmationDialog("Delete Menu Item", isPresented: $showDeleteConfirmation, titleVisibility: .visible) {
+            Button("Delete", role: .destructive) {
+                menuViewModel.deleteMenuItem(item)
+            }
+            Button("Cancel", role: .cancel) { }
+        } message: {
+            Text("Are you sure you want to delete \"\(item.title)\"? This action cannot be undone.")
+        }
     }
 
 }
 
 #Preview {
-    MenuGridItemView(item: MenuViewModel().menuItems[0])
-        .environment(MenuViewModel.mock)
+    let viewModel: MenuViewModel = MenuViewModel()
+    MenuGridItemView(item: viewModel.menuItems[0])
+        .environment(viewModel)
 }

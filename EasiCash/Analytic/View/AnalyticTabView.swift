@@ -49,7 +49,7 @@ struct AnalyticTabView: View {
             VStack {
                 Text(String(format: "$%.2f", viewModel.getTodayRevenue()))
                     .font(.system(size: 50))
-                    .foregroundStyle(Color.black.opacity(0.8))
+                    .foregroundStyle(Color.primary.opacity(0.9))
 
                 Text("Today Total Revenue")
                     .font(.system(size: 25, weight: .bold))

@@ -14,19 +14,46 @@ struct AddNewMenuItemSheetView: View {
 
     @Binding var presentAddMenuItemSheetView: Bool
 
+    // Internal State
+
     @State private var newMenuItemTitle: String = ""
-    @State private var newMenuItemPrice: Double = 0
+
+    @State private var newMenuItemPrice: Double = 0.99
+
     @State private var pickerItem: PhotosPickerItem?
+
     @State private var selectedImage: Image?
+
     @State private var selectedCategory: MenuCategory = .food
+
+    var isAbleToSubmit: Bool {
+        newMenuItemTitle.isEmpty || newMenuItemPrice <= 0 || selectedImage == nil
+    }
+
+    let formatter: NumberFormatter = {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        return formatter
+    }()
 
     var body: some View {
         NavigationStack {
             VStack {
+
                 List {
 
                     Section {
                         PhotosPicker("Select a picture", selection: $pickerItem, matching: .images)
+
+                        if let selectedImage {
+                            HStack {
+                                selectedImage
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 250, height: 200)
+                            }
+                            .frame(maxWidth: .infinity)
+                        }
                     } header: {
                         Text("Upload an image")
                     }
@@ -38,7 +65,7 @@ struct AddNewMenuItemSheetView: View {
                     }
 
                     Section {
-                        TextField("Price", value: $newMenuItemPrice, formatter: NumberFormatter())
+                        TextField("Price", value: $newMenuItemPrice, formatter: formatter)
                             .keyboardType(.decimalPad)
                     } header: {
                         Text("Price")
@@ -54,7 +81,6 @@ struct AddNewMenuItemSheetView: View {
                     } header: {
                         Text("Category")
                     }
-
                 }
                 .onChange(of: pickerItem) {
                     Task {
@@ -65,40 +91,45 @@ struct AddNewMenuItemSheetView: View {
             .navigationTitle("Add new menu item")
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Button {
-                        presentAddMenuItemSheetView = false
-                    } label: {
+                    Button(action: cancel) {
                         Text("Cancel")
                     }
                 }
-
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        viewModel.menuItems.append(
-                            .init(imageName: newMenuItemTitle,
-                                  image: selectedImage,
-                                  title: newMenuItemTitle,
-                                  category: selectedCategory,
-                                  price: newMenuItemPrice)
-                        )
-
-                        presentAddMenuItemSheetView = false
-                    } label: {
+                    Button(action: submit) {
                         Text("Submit")
                     }
-                    .disabled(newMenuItemTitle.isEmpty || newMenuItemPrice <= 0 || selectedImage == nil)
+                    .disabled(isAbleToSubmit)
                 }
             }
         }
     }
 
-    func add(number: Int) {
+    func cancel() {
+        presentAddMenuItemSheetView = false
+    }
 
+    func submit() {
+        guard let selectedImage else { return }
+
+        let imagePNGData = ImageRenderer(content: selectedImage).uiImage?.pngData()
+
+        let newItem: MenuItem = .init(
+            imageName: newMenuItemTitle,
+            image: imagePNGData,
+            title: newMenuItemTitle,
+            category: selectedCategory,
+            price: newMenuItemPrice)
+
+        viewModel.addNewMenuItem(with: newItem)
+
+        presentAddMenuItemSheetView = false
     }
 }
 
 #Preview {
     @Previewable @State var present: Bool = false
+
     AddNewMenuItemSheetView(presentAddMenuItemSheetView: $present)
         .environment(MenuViewModel())
 }

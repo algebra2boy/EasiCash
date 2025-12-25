@@ -7,27 +7,36 @@
 
 import Foundation
 import SwiftUI
+import SwiftData
 
-enum MenuCategory: String, CaseIterable {
+enum MenuCategory: String, CaseIterable, Codable {
     case food
     case drink
     case dessert
 }
 
-struct MenuItem: Identifiable, Equatable {
+@Model
+class MenuItem: Identifiable, Equatable {
 
     var id: UUID
+
     var imageName: String
-    var image: Image?
+
+    @Attribute(.externalStorage)
+    var image: Data?
+
     var title: String
+
     var price: Double
+
     var quantity: Int
+
     var category: MenuCategory
 
     init(
         id: UUID = UUID(),
         imageName: String,
-        image: Image? = nil,
+        image: Data? = nil,
         title: String,
         category: MenuCategory,
         price: Double,

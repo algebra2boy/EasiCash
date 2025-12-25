@@ -12,15 +12,16 @@ struct MenuGridGalleryView: View {
 
     @Environment(MenuViewModel.self) var viewModel: MenuViewModel
 
-    let columns = [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())]
-
     @State private var selectedCategory: MenuCategory = .food
 
     @State private var presentAddMenuItemSheetView: Bool = false
 
     @Binding var submissionTapped: Bool
 
-    var addNewMenuItemTip = AddNewMenuItemTip()
+    let columns = [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())]
+
+    // Note: add a tip here to inform what the plus button does
+    let addNewMenuItemTip = AddNewMenuItemTip()
 
     private var filteredMenuItems: [MenuItem] {
         viewModel.menuItems.filter { $0.category == selectedCategory }
@@ -49,12 +50,8 @@ struct MenuGridGalleryView: View {
         .sheet(isPresented: $presentAddMenuItemSheetView) {
             AddNewMenuItemSheetView(presentAddMenuItemSheetView: $presentAddMenuItemSheetView)
         }
-        .alert("Order Submitted", isPresented: $submissionTapped) {
-            Button("OK", role: .cancel) {
-                submissionTapped = false
-            }
-        } message: {
-            Text("Your order has been submitted!")
+        .onAppear {
+            viewModel.refreshMenuItems()
         }
     }
 }
@@ -62,6 +59,7 @@ struct MenuGridGalleryView: View {
 #Preview {
     NavigationStack {
         MenuGridGalleryView(submissionTapped: .constant(false))
-            .environment(MenuViewModel.mock)
+            .environment(MenuViewModel())
+            .previewableTip()
     }
 }

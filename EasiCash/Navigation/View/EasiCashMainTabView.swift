@@ -20,7 +20,7 @@ struct EasiCashMainTabView: View {
             }
             .customizationID(AppTabs.menu.customizationID)
 
-            Tab(AppTabs.sale.name, systemImage: AppTabs.sale.icon, value: .menu) {
+            Tab(AppTabs.sale.name, systemImage: AppTabs.sale.icon, value: .sale) {
                 SaleTabView()
             }
             .customizationID(AppTabs.sale.customizationID)

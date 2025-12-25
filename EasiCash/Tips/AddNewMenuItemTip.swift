@@ -9,11 +9,13 @@ import TipKit
 
 struct AddNewMenuItemTip: Tip {
     var title: Text {
-        Text("Save new menu Item")
+        Text("Save new menu Item").bold()
     }
+
     var message: Text? {
         Text("Add item using photo, name, and price")
     }
+
     var image: Image? {
         Image(systemName: "lightbulb")
     }

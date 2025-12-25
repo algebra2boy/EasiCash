@@ -61,6 +61,21 @@ struct SaleInspectionView: View {
 
                 Divider()
 
+                // Additional Info Section
+                if !order.note.isEmpty {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Additional Info")
+                            .font(.headline)
+                            .foregroundColor(.primary)
+                        Text(order.note)
+                            .font(.body)
+                            .foregroundColor(.secondary)
+                    }
+                    .padding(.bottom, 6)
+                    
+                    Divider()
+                }
+
                 // Items Section
                 VStack(alignment: .leading, spacing: 12) {
                     Text("Order Items")
@@ -98,7 +113,7 @@ struct SaleInspectionView: View {
             }
             .padding()
             .cornerRadius(10)
-            .shadow(color: Color.black.opacity(0.1), radius: 10, x: 0, y: 5)
+            .shadow(color: Color.primary.opacity(0.1), radius: 10, x: 0, y: 5)
         }
     }
 

@@ -53,7 +53,7 @@ struct HourlyIncomeChartView: View {
                                     .foregroundColor(.orange)
                             }
                             .padding(4)
-                            .background(Color.white.opacity(0.7))
+                            .background(Color(.systemBackground).opacity(0.9))
                             .cornerRadius(4)
                             .shadow(radius: 2)
                         }
