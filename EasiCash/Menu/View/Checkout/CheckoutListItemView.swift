@@ -107,8 +107,8 @@ struct CheckoutListItemView: View {
 
 #Preview {
 
-    @Previewable @State var item: MenuItem = MenuViewModel.mock.menuItems[0]
+    @Previewable @State var item: MenuItem = MenuItem(imageName: "pho", title: "pho", category: .food, price: 1.00)
 
     CheckoutListItemView(item: $item)
-        .environment(MenuViewModel.mock)
+        .environment(MenuViewModel())
 }
