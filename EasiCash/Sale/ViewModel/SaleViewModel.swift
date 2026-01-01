@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 @Observable @MainActor class SaleViewModel {
 
@@ -31,7 +32,7 @@ import Foundation
         return foodCount.map { (foodName, count) in
             BarchartSaleByAmount(title: foodName, amount: count)
         }
-        .sorted { $0.amount > $1.amount}
+        .sorted { $0.amount > $1.amount }
     }
 
     func getSalesByCategory() -> [PiechartSaleByCategory] {
@@ -85,11 +86,88 @@ import Foundation
     }
 
     func getTodayRevenue() -> Double {
-        saleHistory.reduce(0) { $0 + $1.price }
+        saleHistory.filter { Calendar.current.isDateInToday($0.createdAt) }.reduce(0) {
+            $0 + $1.price
+        }
     }
 
-    func addSale(with checkoutList: CheckOutList, name: String, note: String, type: OrderType, totalPrice: Double) {
-        let newOrder = Order(user: name, note: note, price: totalPrice, items: checkoutList.items, type: type)
+    func getYesterdayRevenue() -> Double {
+        saleHistory.filter { Calendar.current.isDateInYesterday($0.createdAt) }.reduce(0) {
+            $0 + $1.price
+        }
+    }
+
+    func getRevenueTrend() -> Double {
+        let today = getTodayRevenue()
+        let yesterday = getYesterdayRevenue()
+        guard yesterday > 0 else { return 0 }
+        return (today - yesterday) / yesterday
+    }
+
+    func getTopSellingProduct() -> (name: String, count: Int)? {
+        let sales = getOverallSale()
+        return sales.first.map { ($0.title, $0.amount) }
+    }
+
+    func getUnderperformingProducts() -> [String] {
+        let sales = getOverallSale()
+        return sales.filter { $0.amount < 5 }.map { $0.title }
+    }
+
+    func getPredictedRevenueNextWeek() -> Double {
+        let last7DaysOrders = saleHistory.filter {
+            $0.createdAt > Date().addingTimeInterval(-7 * 24 * 3600)
+        }
+        let averageDaily = last7DaysOrders.reduce(0) { $0 + $1.price } / 7.0
+        return averageDaily * 1.1  // Predicting 10% growth for demo
+    }
+
+    func getInsights() -> [Insight] {
+        var insights: [Insight] = []
+
+        let trend = getRevenueTrend()
+        if trend > 0.1 {
+            insights.append(
+                Insight(
+                    title: "Strong Growth",
+                    message: "Revenue is up \(Int(trend * 100))% from yesterday. Keep it up!",
+                    systemImage: "arrow.up.right.circle.fill", color: .green))
+        } else if trend < -0.1 {
+            insights.append(
+                Insight(
+                    title: "Revenue Drop",
+                    message:
+                        "Sales are down \(Int(abs(trend) * 100))%. Consider a happy hour promotion.",
+                    systemImage: "arrow.down.right.circle.fill", color: .red))
+        }
+
+        if let top = getTopSellingProduct() {
+            insights.append(
+                Insight(
+                    title: "Popular Item",
+                    message:
+                        "\(top.name) is selling fast toay (\(top.count) orders). Stock up on ingredients!",
+                    systemImage: "star.fill", color: .orange))
+        }
+
+        let slow = getUnderperformingProducts()
+        if !slow.isEmpty {
+            insights.append(
+                Insight(
+                    title: "Inventory Alert",
+                    message: "Slow movers: \(slow.joined(separator: ", ")). Reduce next order.",
+                    systemImage: "exclamationmark.triangle.fill", color: .yellow))
+        }
+
+        return insights
+    }
+
+    func addSale(
+        with checkoutList: CheckOutList, name: String, note: String, type: OrderType,
+        totalPrice: Double
+    ) {
+        let newOrder = Order(
+            user: name, note: note, price: totalPrice, items: checkoutList.items, type: type)
         dataSource?.addOrder(newOrder)
         self.saleHistory.append(newOrder)
     }
@@ -97,7 +175,7 @@ import Foundation
     func refreshOrders() {
         self.saleHistory = dataSource?.fetchOrders() ?? []
     }
-    
+
     func deleteOrder(_ order: Order) {
         dataSource?.deleteOrder(order)
         refreshOrders()
@@ -107,90 +185,66 @@ import Foundation
         let calendar = Calendar.current
         let today = Date()
         let yesterday = calendar.date(byAdding: .day, value: -1, to: today)!
+        let twoDaysAgo = calendar.date(byAdding: .day, value: -2, to: today)!
 
-        return SaleViewModel(saleHistory: [
-            // Orders for Today
-            Order(id: UUID(), user: "Alice", note: "First order today", price: 15.98, items: [
-                MenuItem(imageName: "burger", title: "burger", category: .food, price: 9.99, quantity: 1),
-                MenuItem(imageName: "thaiTea", title: "Thai tea", category: .drink, price: 5.99, quantity: 1)
-            ], createdAt: calendar.date(bySettingHour: 9, minute: 0, second: 0, of: today)!, type: .inStore),
+        let mockOrders: [Order] = [
+            // Today
+            Order(
+                user: "User 1", note: "", price: 45.0,
+                items: [
+                    MenuItem(
+                        imageName: "burger", title: "Burger", category: .food, price: 15.0,
+                        quantity: 3)
+                ], createdAt: calendar.date(bySettingHour: 12, minute: 0, second: 0, of: today)!,
+                type: .inStore),
+            Order(
+                user: "User 2", note: "", price: 25.0,
+                items: [
+                    MenuItem(
+                        imageName: "thaiTea", title: "Thai Tea", category: .drink, price: 5.0,
+                        quantity: 5)
+                ], createdAt: calendar.date(bySettingHour: 14, minute: 30, second: 0, of: today)!,
+                type: .online),
+            Order(
+                user: "User 3", note: "", price: 60.0,
+                items: [
+                    MenuItem(
+                        imageName: "pho", title: "Pho", category: .food, price: 12.0, quantity: 5)
+                ], createdAt: calendar.date(bySettingHour: 18, minute: 0, second: 0, of: today)!,
+                type: .online),
 
-            Order(id: UUID(), user: "Bob", note: "Great service!", price: 19.98, items: [
-                MenuItem(imageName: "burger", title: "burger", category: .food, price: 9.99, quantity: 2)
-            ], createdAt: calendar.date(bySettingHour: 12, minute: 0, second: 0, of: today)!, type: .online),
+            // Yesterday (Slower day)
+            Order(
+                user: "User 4", note: "", price: 30.0,
+                items: [
+                    MenuItem(
+                        imageName: "burger", title: "Burger", category: .food, price: 15.0,
+                        quantity: 2)
+                ],
+                createdAt: calendar.date(bySettingHour: 12, minute: 0, second: 0, of: yesterday)!,
+                type: .inStore),
+            Order(
+                user: "User 5", note: "", price: 15.0,
+                items: [
+                    MenuItem(
+                        imageName: "thaiTea", title: "Thai Tea", category: .drink, price: 5.0,
+                        quantity: 3)
+                ],
+                createdAt: calendar.date(bySettingHour: 15, minute: 0, second: 0, of: yesterday)!,
+                type: .inStore),
 
-            Order(id: UUID(), user: "Charlie", note: "Quick delivery", price: 25.97, items: [
-                MenuItem(imageName: "pho", title: "pho", category: .food, price: 12.99, quantity: 2)
-            ], createdAt: calendar.date(bySettingHour: 15, minute: 0, second: 0, of: today)!, type: .online),
+            // Two days ago (Busy day)
+            Order(
+                user: "User 6", note: "", price: 120.0,
+                items: [
+                    MenuItem(
+                        imageName: "sushi", title: "Sushi", category: .food, price: 20.0,
+                        quantity: 6)
+                ],
+                createdAt: calendar.date(bySettingHour: 19, minute: 0, second: 0, of: twoDaysAgo)!,
+                type: .online),
+        ]
 
-            Order(id: UUID(), user: "Eve", note: "Tasty!", price: 25.97, items: [
-                MenuItem(imageName: "pho", title: "pho", category: .food, price: 12.99, quantity: 2)
-            ], createdAt: calendar.date(bySettingHour: 21, minute: 0, second: 0, of: today)!, type: .online),
-            // Orders for Today
-            Order(id: UUID(), user: "Aldvce", note: "First order today", price: 20.97, items: [
-                MenuItem(imageName: "burger", title: "burger", category: .food, price: 9.99, quantity: 1),
-                MenuItem(imageName: "thaiTea", title: "Thai tea", category: .drink, price: 3.99, quantity: 1),
-                MenuItem(imageName: "cake", title: "cake", category: .dessert, price: 6.99, quantity: 1)
-            ], createdAt: calendar.date(bySettingHour: 9, minute: 0, second: 0, of: today)!, type: .inStore),
-
-            Order(id: UUID(), user: "Boe", note: "Great service!", price: 28.98, items: [
-                MenuItem(imageName: "pizza", title: "Pizza", category: .food, price: 14.99, quantity: 2)
-            ], createdAt: calendar.date(bySettingHour: 12, minute: 0, second: 0, of: today)!, type: .online),
-
-            Order(id: UUID(), user: "Charliest", note: "Quick delivery", price: 39.96, items: [
-                MenuItem(imageName: "sushi", title: "Sushi", category: .food, price: 13.99, quantity: 2),
-                MenuItem(imageName: "noodle", title: "Noodle", category: .food, price: 9.99, quantity: 1)
-            ], createdAt: calendar.date(bySettingHour: 15, minute: 0, second: 0, of: today)!, type: .online),
-
-            Order(id: UUID(), user: "Exve", note: "Tasty!", price: 30.97, items: [
-                MenuItem(imageName: "pho", title: "Pho", category: .food, price: 12.99, quantity: 2),
-                MenuItem(imageName: "thaiTea", title: "Thai tea", category: .drink, price: 4.99, quantity: 1)
-            ], createdAt: calendar.date(bySettingHour: 21, minute: 0, second: 0, of: today)!, type: .online),
-
-            // Orders for Yesterday
-            Order(id: UUID(), user: "Frank", note: "Will order again", price: 9.99, items: [
-                MenuItem(imageName: "burger", title: "burger", category: .food, price: 9.99, quantity: 1)
-            ], createdAt: calendar.date(bySettingHour: 10, minute: 0, second: 0, of: yesterday)!, type: .inStore),
-
-            Order(id: UUID(), user: "Grace", note: "Loved the ambiance", price: 15.98, items: [
-                MenuItem(imageName: "burger", title: "burger", category: .food, price: 9.99, quantity: 1),
-                MenuItem(imageName: "thaiTea", title: "Thai tea", category: .drink, price: 5.99, quantity: 1)
-            ], createdAt: calendar.date(bySettingHour: 13, minute: 0, second: 0, of: yesterday)!, type: .inStore),
-
-            Order(id: UUID(), user: "Hugo", note: "Thanks!", price: 19.98, items: [
-                MenuItem(imageName: "pho", title: "pho", category: .food, price: 12.99, quantity: 1),
-                MenuItem(imageName: "thaiTea", title: "Thai tea", category: .drink, price: 6.99, quantity: 1)
-            ], createdAt: calendar.date(bySettingHour: 16, minute: 0, second: 0, of: yesterday)!, type: .online),
-
-            Order(id: UUID(), user: "Ivy", note: "Quick and easy", price: 19.98, items: [
-                MenuItem(imageName: "pho", title: "pho", category: .food, price: 12.99, quantity: 1),
-                MenuItem(imageName: "thaiTea", title: "Thai tea", category: .drink, price: 6.99, quantity: 1)
-            ], createdAt: calendar.date(bySettingHour: 19, minute: 0, second: 0, of: yesterday)!, type: .inStore),
-
-            Order(id: UUID(), user: "Fransk", note: "Will order again", price: 18.98, items: [
-                MenuItem(imageName: "pizza2", title: "Pizza Special", category: .food, price: 15.99, quantity: 1),
-                MenuItem(imageName: "thaiTea", title: "Thai tea", category: .drink, price: 2.99, quantity: 1)
-            ], createdAt: calendar.date(bySettingHour: 10, minute: 0, second: 0, of: yesterday)!, type: .inStore),
-
-            Order(id: UUID(), user: "Grdace", note: "Loved the ambiance", price: 19.98, items: [
-                MenuItem(imageName: "sashimi", title: "Sashimi", category: .food, price: 16.99, quantity: 1),
-                MenuItem(imageName: "thaiTea", title: "Thai tea", category: .drink, price: 2.99, quantity: 1)
-            ], createdAt: calendar.date(bySettingHour: 13, minute: 0, second: 0, of: yesterday)!, type: .inStore),
-
-            Order(id: UUID(), user: "Hucgo", note: "Thanks!", price: 20.97, items: [
-                MenuItem(imageName: "noodle", title: "Noodle", category: .food, price: 9.99, quantity: 1),
-                MenuItem(imageName: "sashimi", title: "Sashimi", category: .food, price: 10.99, quantity: 1)
-            ], createdAt: calendar.date(bySettingHour: 16, minute: 0, second: 0, of: yesterday)!, type: .online),
-
-            Order(id: UUID(), user: "Isvy", note: "Quick and easy", price: 14.98, items: [
-                MenuItem(imageName: "firedRice", title: "Fried Rice", category: .food, price: 8.99, quantity: 1),
-                MenuItem(imageName: "thaiTea", title: "Thai tea", category: .drink, price: 5.99, quantity: 1)
-            ], createdAt: calendar.date(bySettingHour: 19, minute: 0, second: 0, of: yesterday)!, type: .inStore),
-
-            Order(id: UUID(), user: "Jacck", note: "Very satisfying", price: 29.96, items: [
-                MenuItem(imageName: "xiaolongbao", title: "Xiaolongbao", category: .food, price: 9.99, quantity: 2),
-                MenuItem(imageName: "cake", title: "Cake", category: .dessert, price: 4.99, quantity: 2)
-            ], createdAt: calendar.date(bySettingHour: 22, minute: 0, second: 0, of: yesterday)!, type: .online)
-        ])
+        return SaleViewModel(saleHistory: mockOrders)
     }
 }
