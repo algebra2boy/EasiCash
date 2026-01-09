@@ -8,3 +8,4 @@ DerivedData/
 *.xcbkptlist
 *.xcscheme
 *.DS_Store
+*.vscode/
