@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 struct BarchartSaleByAmount: Identifiable {
     let id = UUID()
@@ -29,4 +30,12 @@ struct HourlyIncomeElement: Identifiable {
     let id = UUID()
     let hour: Int
     let income: Double
+}
+
+struct Insight: Identifiable {
+    let id = UUID()
+    let title: String
+    let message: String
+    let systemImage: String
+    let color: SwiftUI.Color
 }
