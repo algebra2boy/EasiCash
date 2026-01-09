@@ -65,7 +65,7 @@ struct RevenueDetailView: View {
         }
         .padding(24)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color.white)
+        .background(Color(uiColor: .secondarySystemBackground))
         .cornerRadius(20)
         .shadow(color: .black.opacity(0.04), radius: 10, y: 4)
         .padding(.horizontal)
@@ -85,7 +85,7 @@ struct RevenueDetailView: View {
             timelineChart
         }
         .padding(.vertical, 24)
-        .background(Color.white)
+        .background(Color(uiColor: .secondarySystemBackground))
         .cornerRadius(20)
         .shadow(color: .black.opacity(0.04), radius: 10, x: 0, y: 4)
         .padding(.horizontal)
@@ -170,7 +170,7 @@ struct RevenueDetailView: View {
                     }
                 }
             }
-            .background(Color.white)
+            .background(Color(uiColor: .secondarySystemBackground))
             .cornerRadius(16)
             .shadow(color: .black.opacity(0.05), radius: 8, x: 0, y: 4)
             .padding(.horizontal)

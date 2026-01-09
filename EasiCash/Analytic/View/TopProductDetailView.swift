@@ -76,7 +76,7 @@ struct TopProductDetailView: View {
                     }
                     .frame(height: 300)
                     .padding()
-                    .background(Color.white)
+                    .background(Color(uiColor: .secondarySystemBackground))
                     .cornerRadius(16)
                     .shadow(color: .black.opacity(0.05), radius: 8, x: 0, y: 4)
                     .padding(.horizontal)
@@ -109,7 +109,7 @@ struct TopProductDetailView: View {
                             }
                         }
                     }
-                    .background(Color.white)
+                    .background(Color(uiColor: .secondarySystemBackground))
                     .cornerRadius(16)
                     .shadow(color: .black.opacity(0.05), radius: 8, x: 0, y: 4)
                     .padding(.horizontal)

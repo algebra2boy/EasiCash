@@ -179,7 +179,7 @@ struct RevenueComparisonChartView: View {
                     )  // Softer colors on blue
                     .padding(.horizontal, 8)
                     .padding(.vertical, 4)
-                    .background(Color.white.opacity(0.85))
+                    .background(Color.white.opacity(0.9))
                     .clipShape(Capsule())
                 }
             }
@@ -435,7 +435,7 @@ struct RevenueComparisonChartView: View {
                 .font(.caption.bold())
         }
         .padding(8)
-        .background(Color.white)
+        .background(Color(uiColor: .secondarySystemBackground))
         .cornerRadius(8)
         .shadow(radius: 4)
     }
@@ -452,7 +452,7 @@ struct RevenueComparisonChartView: View {
                 .font(.caption.bold())
         }
         .padding(8)
-        .background(Color.white)
+        .background(Color(uiColor: .secondarySystemBackground))
         .cornerRadius(8)
         .shadow(radius: 4)
     }
