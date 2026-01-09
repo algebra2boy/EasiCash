@@ -74,7 +74,7 @@ struct RevenueComparisonChartView: View {
                 // We moved "Global Pulse" to the parent view, so these are strict "Period Stats"
                 periodStatsRow
                     .padding()
-                    .background(Color.white.opacity(0.1))
+                    .background(Color.white.opacity(0.08))
 
                 Divider().overlay(Color.white.opacity(0.2))
 
@@ -435,7 +435,7 @@ struct RevenueComparisonChartView: View {
                 .font(.caption.bold())
         }
         .padding(8)
-        .background(Color.white)
+        .background(Color(uiColor: .secondarySystemBackground))
         .cornerRadius(8)
         .shadow(radius: 4)
     }
@@ -452,7 +452,7 @@ struct RevenueComparisonChartView: View {
                 .font(.caption.bold())
         }
         .padding(8)
-        .background(Color.white)
+        .background(Color(uiColor: .secondarySystemBackground))
         .cornerRadius(8)
         .shadow(radius: 4)
     }
@@ -499,7 +499,7 @@ struct MetricCard: View {
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 12)
-        .background(Color.gray.opacity(0.1))
+        .background(Color.secondary.opacity(0.1))
         .cornerRadius(12)
     }
 }

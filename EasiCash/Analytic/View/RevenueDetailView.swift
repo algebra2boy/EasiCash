@@ -24,7 +24,7 @@ struct RevenueDetailView: View {
             .padding(.vertical)
         }
         .navigationTitle("Today's Performance")
-        .background(Color.gray.opacity(0.05))
+        .background(Color(uiColor: .systemGroupedBackground))
     }
 
     // MARK: - Subviews
@@ -65,7 +65,7 @@ struct RevenueDetailView: View {
         }
         .padding(24)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color.white)
+        .background(Color(uiColor: .secondarySystemBackground))
         .cornerRadius(20)
         .shadow(color: .black.opacity(0.04), radius: 10, y: 4)
         .padding(.horizontal)
@@ -85,7 +85,7 @@ struct RevenueDetailView: View {
             timelineChart
         }
         .padding(.vertical, 24)
-        .background(Color.white)
+        .background(Color(uiColor: .secondarySystemBackground))
         .cornerRadius(20)
         .shadow(color: .black.opacity(0.04), radius: 10, x: 0, y: 4)
         .padding(.horizontal)
@@ -101,12 +101,12 @@ struct RevenueDetailView: View {
             Color.orange.opacity(0.8),
             Color.indigo.opacity(0.8),
         ]
-        
+
         // Create today's 24-hour domain (start of today to start of tomorrow)
         let calendar = Calendar.current
         let startOfToday = calendar.startOfDay(for: Date())
         let endOfToday = calendar.date(byAdding: .day, value: 1, to: startOfToday) ?? startOfToday
-        
+
         let baseChart = Chart(chartData) { item in
             BarMark(
                 x: .value("Time", item.date, unit: .hour),
@@ -116,24 +116,25 @@ struct RevenueDetailView: View {
             .cornerRadius(2)
         }
         .chartXScale(domain: startOfToday...endOfToday)
-        
+
         let chartWithXAxis = baseChart.chartXAxis {
             AxisMarks(values: .stride(by: .hour, count: 2)) { value in
                 AxisGridLine()
                 AxisValueLabel(format: .dateTime.hour())
             }
         }
-        
+
         let chartWithYAxis = chartWithXAxis.chartYAxis {
             AxisMarks(position: .leading) {
                 AxisGridLine()
                 AxisValueLabel()
             }
         }
-        
+
         let chartWithColors = chartWithYAxis.chartForegroundStyleScale(range: colorRange)
-        
-        return chartWithColors
+
+        return
+            chartWithColors
             .frame(height: 320)
             .padding(.horizontal)
     }
@@ -170,9 +171,9 @@ struct RevenueDetailView: View {
                     }
                 }
             }
-            .background(Color.white)
+            .background(Color(uiColor: .secondarySystemBackground))
             .cornerRadius(16)
-            .shadow(color: .black.opacity(0.05), radius: 8, x: 0, y: 4)
+            .shadow(color: .black.opacity(0.04), radius: 8, x: 0, y: 4)
             .padding(.horizontal)
         }
     }
