@@ -166,8 +166,22 @@ import SwiftUI
         with checkoutList: CheckOutList, name: String, note: String, type: OrderType,
         totalPrice: Double
     ) {
+        // Create detached copies of menu items to prevent SwiftData from inserting them as new menu entities
+        // This fixes the bug where cart items would appear as duplicates in the menu after checkout
+        let itemCopies = checkoutList.items.map { item in
+            MenuItem(
+                id: UUID(),
+                imageName: item.imageName,
+                image: item.image,
+                title: item.title,
+                category: item.category,
+                price: item.price,
+                quantity: item.quantity
+            )
+        }
+        
         let newOrder = Order(
-            user: name, note: note, price: totalPrice, items: checkoutList.items, type: type)
+            user: name, note: note, price: totalPrice, items: itemCopies, type: type)
         dataSource?.addOrder(newOrder)
         self.saleHistory.append(newOrder)
     }
