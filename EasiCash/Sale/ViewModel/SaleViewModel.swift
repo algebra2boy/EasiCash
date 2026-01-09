@@ -181,7 +181,155 @@ import SwiftUI
         refreshOrders()
     }
 
+    // MARK: - Analytics Helpers
+
+    struct DishSoldToday: Identifiable {
+        let id = UUID()
+        let name: String
+        let quantity: Int
+        let revenue: Double
+    }
+
+    struct MockSale: Identifiable {
+        let id = UUID()
+        let createdAt: Date
+        let productName: String
+        let price: Double
+    }
+
+    func getTodaySales() -> [MockSale] {
+        let todayOrders = saleHistory.filter { Calendar.current.isDateInToday($0.createdAt) }
+        var result: [MockSale] = []
+
+        for order in todayOrders {
+            for item in order.items {
+                // For each quantity, we could theoretically add a dot.
+                // To keep it simple, we'll add one entry per item instance in the order.
+                for _ in 0..<item.quantity {
+                    // Small fuzziness to time so dots don't perfectly overlap if same order
+                    let fuzzyTime = order.createdAt.addingTimeInterval(Double.random(in: -60...60))
+                    result.append(
+                        MockSale(createdAt: fuzzyTime, productName: item.title, price: item.price))
+                }
+            }
+        }
+        return result.sorted { $0.createdAt < $1.createdAt }
+    }
+
+    func getDishesSoldToday() -> [DishSoldToday] {
+        let todayOrders = saleHistory.filter { Calendar.current.isDateInToday($0.createdAt) }
+        var dishMap: [String: (qty: Int, rev: Double)] = [:]
+
+        for order in todayOrders {
+            for item in order.items {
+                let current = dishMap[item.title] ?? (qty: 0, rev: 0.0)
+                dishMap[item.title] = (
+                    qty: current.qty + item.quantity,
+                    rev: current.rev + (item.price * Double(item.quantity))
+                )
+            }
+        }
+
+        return dishMap.map { key, value in
+            DishSoldToday(name: key, quantity: value.qty, revenue: value.rev)
+        }
+        .sorted { $0.revenue > $1.revenue }
+    }
+
+    func getBestRevenueHour() -> String {
+        let todayOrders = saleHistory.filter { Calendar.current.isDateInToday($0.createdAt) }
+        var hourlyRevenue = Array(repeating: 0.0, count: 24)
+        let calendar = Calendar.current
+
+        for order in todayOrders {
+            let hour = calendar.component(.hour, from: order.createdAt)
+            hourlyRevenue[hour] += order.price
+        }
+
+        if let maxHour = hourlyRevenue.indices.max(by: { hourlyRevenue[$0] < hourlyRevenue[$1] }),
+            hourlyRevenue[maxHour] > 0
+        {
+            // Format time, e.g., "1 PM - 2 PM" or "13:00 - 14:00"
+            // Simple approach:
+            let start = maxHour
+            let end = (maxHour + 1) % 24
+            return "\(start):00 - \(end):00"
+        }
+        return "N/A"
+    }
+
+    enum AnalyticsOrderStatus: String, CaseIterable {
+        case preparing = "Preparing"
+        case ready = "Ready"
+        case delayed = "Delayed"
+
+        var color: Color {
+            switch self {
+            case .preparing: return .orange
+            case .ready: return .green
+            case .delayed: return .red
+            }
+        }
+    }
+
+    struct ActiveOrderWrapper: Identifiable {
+        let id = UUID()
+        let originalOrder: Order
+        let status: AnalyticsOrderStatus
+        let timeElapsed: TimeInterval
+    }
+
+    func getActiveOrders() -> [ActiveOrderWrapper] {
+        // Mock implementation since we don't have real "active" status
+        // We'll consider today's orders as candidates and assign random statuses
+        let todayOrders = saleHistory.filter { Calendar.current.isDateInToday($0.createdAt) }
+
+        return todayOrders.prefix(5).map { order in
+            // Mock status based on order hash or random
+            let statuses = AnalyticsOrderStatus.allCases
+            let status = statuses[Int.random(in: 0..<statuses.count)]
+            let elapsed = Date().timeIntervalSince(order.createdAt)
+            return ActiveOrderWrapper(originalOrder: order, status: status, timeElapsed: elapsed)
+        }
+    }
+
+    struct CategoryComparisonData: Identifiable {
+        let id = UUID()
+        let category: String
+        let todayAmount: Int
+        let yesterdayAmount: Int
+    }
+
+    func getCategoryComparison() -> [CategoryComparisonData] {
+        var todayMap: [String: Int] = [:]
+        var yesterdayMap: [String: Int] = [:]
+
+        let calendar = Calendar.current
+
+        for order in saleHistory {
+            if calendar.isDateInToday(order.createdAt) {
+                for item in order.items {
+                    todayMap[item.category.rawValue, default: 0] += item.quantity
+                }
+            } else if calendar.isDateInYesterday(order.createdAt) {
+                for item in order.items {
+                    yesterdayMap[item.category.rawValue, default: 0] += item.quantity
+                }
+            }
+        }
+
+        let allCategories = Set(todayMap.keys).union(yesterdayMap.keys)
+        return allCategories.map { cat in
+            CategoryComparisonData(
+                category: cat,
+                todayAmount: todayMap[cat] ?? 0,
+                yesterdayAmount: yesterdayMap[cat] ?? 0
+            )
+        }
+    }
+
     static var mock: SaleViewModel {
+
         let calendar = Calendar.current
         let today = Date()
         let yesterday = calendar.date(byAdding: .day, value: -1, to: today)!
