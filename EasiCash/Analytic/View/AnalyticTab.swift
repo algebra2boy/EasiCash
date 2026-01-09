@@ -33,7 +33,7 @@ struct AnalyticTab<T: Hashable>: View {
                             .background {
                                 if isSelected {
                                     Capsule()
-                                        .fill(Color.primary)  // Adapts to Dark/Light mode nicely
+                                        .fill(Color(red: 0.1, green: 0.45, blue: 0.9))  // Deep professional blue for contrast
                                         .matchedGeometryEffect(id: "activeTab", in: namespace)
                                 } else {
                                     Capsule()

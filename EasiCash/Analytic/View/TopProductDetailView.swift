@@ -17,7 +17,7 @@ enum TimePeriodFilter: String, CaseIterable {
 
 struct TopProductDetailView: View {
     var viewModel: SaleViewModel
-    
+
     @State private var selectedFilter: TimePeriodFilter = .today
 
     var body: some View {
@@ -26,9 +26,11 @@ struct TopProductDetailView: View {
 
                 // 1. Hero Block with Title
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Products ranked by total order volume \(selectedFilter.rawValue.lowercased()).")
-                        .font(.body)
-                        .foregroundStyle(.secondary)
+                    Text(
+                        "Products ranked by total order volume \(selectedFilter.rawValue.lowercased())."
+                    )
+                    .font(.body)
+                    .foregroundStyle(.secondary)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.horizontal)
@@ -41,16 +43,25 @@ struct TopProductDetailView: View {
                         .padding(.horizontal)
 
                     Chart {
-                        ForEach(getFilteredSales().prefix(5).reversed()) { sale in
+                        let filteredData = getFilteredSales().prefix(5).reversed()
+                        let maxAmount = Double(
+                            filteredData.max(by: { $0.amount < $1.amount })?.amount ?? 1)
+
+                        ForEach(Array(filteredData)) { sale in
                             BarMark(
                                 x: .value("Orders", sale.amount),
                                 y: .value("Product", sale.title)
                             )
                             .foregroundStyle(
                                 LinearGradient(
-                                    colors: [.blue, .purple],
-                                    startPoint: .leading,
-                                    endPoint: .trailing
+                                    colors: [
+                                        Color.blue.opacity(
+                                            0.4 + (Double(sale.amount) / maxAmount) * 0.6),
+                                        Color.blue.opacity(
+                                            0.1 + (Double(sale.amount) / maxAmount) * 0.9),
+                                    ],
+                                    startPoint: .trailing,
+                                    endPoint: .leading
                                 )
                             )
                             .cornerRadius(4)
@@ -78,7 +89,7 @@ struct TopProductDetailView: View {
                     .padding()
                     .background(Color(uiColor: .secondarySystemBackground))
                     .cornerRadius(16)
-                    .shadow(color: .black.opacity(0.05), radius: 8, x: 0, y: 4)
+                    .shadow(color: .black.opacity(0.04), radius: 8, x: 0, y: 4)
                     .padding(.horizontal)
                 }
 
@@ -87,7 +98,7 @@ struct TopProductDetailView: View {
                     VStack(alignment: .leading, spacing: 12) {
                         Text("Leaderboard")
                             .font(.headline)
-                        
+
                         // Filter Picker
                         Picker("Time Period", selection: $selectedFilter) {
                             ForEach(TimePeriodFilter.allCases, id: \.self) { filter in
@@ -111,7 +122,7 @@ struct TopProductDetailView: View {
                     }
                     .background(Color(uiColor: .secondarySystemBackground))
                     .cornerRadius(16)
-                    .shadow(color: .black.opacity(0.05), radius: 8, x: 0, y: 4)
+                    .shadow(color: .black.opacity(0.04), radius: 8, x: 0, y: 4)
                     .padding(.horizontal)
                 }
 
@@ -120,39 +131,43 @@ struct TopProductDetailView: View {
             .padding(.vertical)
         }
         .navigationTitle("Top Products")
-        .background(Color.gray.opacity(0.05))
+        .background(Color(uiColor: .systemGroupedBackground))
     }
-    
+
     // MARK: - Helpers
-    
+
     private func getFilteredSales() -> [BarchartSaleByAmount] {
         let calendar = Calendar.current
         let now = Date()
-        
+
         let startDate: Date
         switch selectedFilter {
         case .today:
             startDate = calendar.startOfDay(for: now)
         case .thisWeek:
-            startDate = calendar.date(from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: now)) ?? now
+            startDate =
+                calendar.date(
+                    from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: now))
+                ?? now
         case .thisMonth:
-            startDate = calendar.date(from: calendar.dateComponents([.year, .month], from: now)) ?? now
+            startDate =
+                calendar.date(from: calendar.dateComponents([.year, .month], from: now)) ?? now
         case .thisYear:
             startDate = calendar.date(from: calendar.dateComponents([.year], from: now)) ?? now
         }
-        
+
         let filteredOrders = viewModel.saleHistory.filter { order in
             order.createdAt >= startDate && order.createdAt <= now
         }
-        
+
         var foodCount: [String: Int] = [:]
-        
+
         for order in filteredOrders {
             for item in order.items {
                 foodCount[item.title, default: 0] += item.quantity
             }
         }
-        
+
         return foodCount.map { (foodName, count) in
             BarchartSaleByAmount(title: foodName, amount: count)
         }
@@ -203,7 +218,7 @@ struct RankRow: View {
                 .foregroundStyle(.secondary)
                 .padding(.horizontal, 12)
                 .padding(.vertical, 6)
-                .background(Color.gray.opacity(0.1))
+                .background(Color(uiColor: .tertiarySystemFill))
                 .clipShape(Capsule())
         }
         .padding()
